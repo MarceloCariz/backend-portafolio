@@ -1,0 +1,14 @@
+alumno presion la app
+dos opciones
+
+1.buscar al profe por datos alumno
+ siguiente vits
+ ingresandoi rut
+ buscar todas la asignaturas del alumno
+ seleccion del profe
+ correo del profe sala asignatura
+ buscar el bloque de horario en curso rango 40min
+ mostrar el horario e imagenes
+
+
+2.buscar dato del profe solo por nombre
