@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-const instantClient =path.resolve(__dirname,'instantclient_21_6');
+const instantClient =path.resolve(__dirname,'instantclient_21_7');
 const wallet =path.resolve(__dirname,'Wallet_MAIPOGRANDE');
 
 console.log(wallet)
