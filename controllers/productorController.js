@@ -11,7 +11,6 @@ const obtenerProductores = async( req, resp) =>{
     const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
     // // const rs= await resultado.resultSet.getRow()
     // // console.log(await rs.NOMBRE)
-    console.log(resultado.rows)
     
     // console.log(resultado.rows[0])
     resp.json(resultado.rows)

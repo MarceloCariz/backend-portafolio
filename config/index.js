@@ -1,4 +1,5 @@
 import oracledb from 'oracledb';
+import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
@@ -10,10 +11,11 @@ const instantClient =path.resolve(__dirname,'instantclient_21_7');
 const wallet =path.resolve(__dirname,'Wallet_MAIPOGRANDE');
 
 console.log(wallet)
+console.log(instantClient)
+
 // oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 // 'C:\\Users\\Default.LAPTOP-V3GJG796\\Desktop\\PORTAFOLIO\\backend\\backend-portafolio\\config\\instantclient_21_6'
-import path, { dirname } from 'path';
-oracledb.initOracleClient({libDir:  instantClient});
+oracledb.initOracleClient({configDir:  instantClient});
 const cs = `tcps://adb.sa-saopaulo-1.oraclecloud.com:1522/g4398818274a3ca_maipogrande_high.adb.oraclecloud.com?wallet_location=${wallet}&retry_count=20&retry_delay=3`
 console.log(path.join("/config/Wallet_MAIPOGRANDE"))
 const conectarDB = async() =>{
