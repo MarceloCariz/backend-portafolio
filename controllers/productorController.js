@@ -31,7 +31,8 @@ const registrarProductor = async(req,resp)=>{
         const passwordHash =  await bcrypt.hash(body.password, salt).then(function(hash) {
             return hash
         });
-        console.log(passwordHash.length)
+        body.correo = body.correo.toLowerCase();
+        console.log(body.correo)
         const resultado = await conexion.execute( `call REGISTRARPRODUCTOR('${body.nombre}','${passwordHash}','${body.correo}','${token}')`); 
         await conexion.commit();
         resp.json({msg: "insertado correctamente"})
@@ -45,8 +46,15 @@ const registrarProductor = async(req,resp)=>{
 const autenticar = async (req,resp) =>{
     try {
         const body = req.body;
-        const contrasena = await conexion.execute( `select contrasena from productor where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const correo = await conexion.execute( `select correo from productor where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        if(correo.rows.length === 0){
+            const error = new Error("Contraseña o correo incorrectos");
+            return resp.status(400).json({ msg: error.message });
+        }
+
+
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
+        const contrasena = await conexion.execute( `select contrasena from productor where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         const validacionContrasena = await bcrypt.compare( body.password, contrasena.rows[0].CONTRASENA);
 
         if(!validacionContrasena){

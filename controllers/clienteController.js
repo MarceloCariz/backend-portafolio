@@ -46,6 +46,11 @@ const regitrarCliente = async(req,resp)=>{
 const autenticar = async (req,resp) =>{
     try {
         const body = req.body;
+        const correo = await conexion.execute( `select correo from clientes where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        if(correo.rows.length === 0){
+            const error = new Error("Contraseña o correo incorrectos");
+            return resp.status(400).json({ msg: error.message });
+        }
         const contrasena = await conexion.execute( `select contrasena from clientes where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         const validacionContrasena = await bcrypt.compare( body.password, contrasena.rows[0].CONTRASENA);
