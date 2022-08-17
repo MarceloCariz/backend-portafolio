@@ -11,7 +11,11 @@ const checkAuthProductor = async(req, resp, next)=>{
             const decoded = jwt.verify(token,process.env.JWT_SECRET);
             // req.usuario =  await Usuario.findById(decoded.id).select("-password -confirmado -token -createdAt -updatedAt -__v")
             // req.usuario =  await Usuario.findById(decoded.id).select("-password -confirmado -token -createdAt -updatedAt -__v")
-            req.usuario = await conexion.execute(`select id,nombre, id_rol , correo from productor where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
+            if(decoded.rol !== 1){
+                const error = new Error("token no valido")
+                return resp.status(401).json({msg: error.message})
+            }
+            req.usuario = await conexion.execute(`select id,nombre, id_rol , correo from productor where ID = '${decoded.id}' and ID_ROL = '${decoded.rol}' `,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
             req.usuario = req.usuario.rows[0];
             // console.log('decoded'+decoded.ID)
             // console.log('token'+token)

@@ -3,6 +3,8 @@ import conectarDB from "./config/index.js";
 import clienteRoutes from './routes/clienteRoutes.js'
 import productorRoutes from './routes/productorRoutes.js'
 import productosRoutes from './routes/productosRoutes.js'
+import usuarioRoutes from './routes/usuarioRoutes.js'
+
 
 import cors from 'cors'
 import dotenv from 'dotenv';
@@ -14,6 +16,7 @@ app.use(cors());
 dotenv.config();
 // await conectarDB();
 app.use('/api/clientes', clienteRoutes)
+app.use('/api/usuario', usuarioRoutes)
 app.use('/api/productos', productosRoutes)
 app.use('/api/productores', productorRoutes)
 app.use(express.urlencoded({extended: false}))

@@ -21,6 +21,7 @@ const regitrarCliente = async(req,resp)=>{
         const body = req.body;
       
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
+        body.correo = body.correo.toLowerCase();
         const validarUsuario = await conexion.execute( `select correo from clientes where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // console.log(resultado)
         if(validarUsuario.rows.length === 1){

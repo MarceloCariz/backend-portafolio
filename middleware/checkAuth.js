@@ -11,7 +11,7 @@ const checkAuth = async(req, resp, next)=>{
             const decoded = jwt.verify(token,process.env.JWT_SECRET);
             // req.usuario =  await Usuario.findById(decoded.id).select("-password -confirmado -token -createdAt -updatedAt -__v")
             // req.usuario =  await Usuario.findById(decoded.id).select("-password -confirmado -token -createdAt -updatedAt -__v")
-            req.usuario = await conexion.execute(`select id,nombre, id_rol , correo from clientes where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
+            req.usuario = await conexion.execute(`select id,nombre, id_rol , correo from ${decoded.rol} where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
             req.usuario = req.usuario.rows[0];
             // console.log('decoded'+decoded.ID)
             // console.log('token'+token)

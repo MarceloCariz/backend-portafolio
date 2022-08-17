@@ -63,8 +63,9 @@ const autenticar = async (req,resp) =>{
         }
         const validarUsuario = await conexion.execute( `select * from productor where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
 
-        const {ID, NOMBRE, TOKEN} = validarUsuario.rows[0];
-        resp.json({msg: "Sesion valida",nombre: NOMBRE , token: generarJWT(ID)})
+        const {ID, NOMBRE, TOKEN, ID_ROL} = validarUsuario.rows[0];
+        console.log(validarUsuario)
+        resp.json({msg: "Sesion valida",nombre: NOMBRE , token: generarJWT(ID,ID_ROL )})
     } catch (error) {
         console.log(error);
         resp.json({msg: "Hubo un error"})
@@ -72,7 +73,8 @@ const autenticar = async (req,resp) =>{
 }
 const perfil = async(req, resp) =>{
     const { usuario } = req;
-    resp.json(usuario);
+
+    resp.json({...usuario, rol:'productor'});
     // console.log('sadsad')
 }
 
