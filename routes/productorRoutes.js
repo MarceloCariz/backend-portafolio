@@ -11,7 +11,7 @@ router.get('/', obtenerProductores);
 router.post('/nuevo', registrarProductor);
 router.post('/login', autenticar);
 router.get('/perfil',checkAuthProductor, perfil)
-router.get('/productos',checkAuthProductor, obtenerProductos )
+router.get('/productos',checkAuth, obtenerProductos )
 router.post('/productos/nuevo',checkAuthProductor, nuevoProducto )
 
 
