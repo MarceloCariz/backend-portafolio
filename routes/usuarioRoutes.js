@@ -1,6 +1,5 @@
 import express from 'express'
-import { perfil } from '../controllers/clienteController.js';
-import { autenticarUser } from '../controllers/UsuarioController.js';
+import { autenticarUser, perfil } from '../controllers/UsuarioController.js';
 import checkAuth from '../middleware/checkAuth.js';
 
 

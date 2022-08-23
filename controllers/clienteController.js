@@ -69,11 +69,11 @@ const autenticar = async (req,resp) =>{
         resp.json({msg: "Hubo un error"})
     }
 }
-const perfil = async(req, resp) =>{
-    const { usuario } = req;
-    resp.json(usuario);
-    // console.log('sadsad')
-}
+// const perfil = async(req, resp) =>{
+//     const { usuario } = req;
+//     resp.json(usuario);
+//     // console.log('sadsad')
+// }
 
 
 
@@ -82,7 +82,7 @@ export {
     obtenerClientes,
     regitrarCliente,
     autenticar,
-    perfil
+    // perfil
 }
 
 
