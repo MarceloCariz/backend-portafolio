@@ -13,7 +13,7 @@ router.post('/nuevo', registrarProductor);
 // router.get('/perfil',checkAuthProductor, perfil)
 router.get('/productos',checkAuth, obtenerProductos )
 router.post('/productos/nuevo',checkAuth, nuevoProducto )
-router.delete('/productos/eliminar',checkAuth, eliminarProducto)
+router.delete('/productos/eliminar/:idp',checkAuth, eliminarProducto)
 router.put('/productos/editar',checkAuth, editarProducto)
 
 

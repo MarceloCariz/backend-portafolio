@@ -74,8 +74,9 @@ const nuevoProducto = async(req, resp) =>{
 const eliminarProducto = async(req, resp) =>{
     try {
         const {ID} = req.usuario;
-        const {id_producto} = req.body;
-        await conexion.execute(`call ELIMINARPRODUCTO(${id_producto},${ID})`)
+        const {idp} = req.params;
+        console.log(idp)
+        await conexion.execute(`call ELIMINARPRODUCTO(${idp},${ID})`)
         resp.json({msg: 'Eliminado Correctamente'})
     } catch (error) {
         console.log(error)
