@@ -62,7 +62,9 @@ const nuevoProducto = async(req, resp) =>{
         // console.log(req.usuario)
         const {ID} = req.usuario;
         const {nombre, cantidad, precio_local, precio_ext, calidad} = req.body;
-        const nuevoProducto = await conexion.execute(`call REGISTRARPRODUCTO('${nombre}',${cantidad}, ${precio_local},${precio_ext},${ID},'${calidad}' ) `);
+        const imagen = req.file.filename;
+        console.log(imagen)
+        const nuevoProducto = await conexion.execute(`call REGISTRARPRODUCTO('${nombre}','${cantidad}', ${precio_local},${precio_ext},${ID},'${calidad}', '${process.env.HOST}/img/${imagen}' ) `);
         await conexion.commit();
         resp.json('anadido correctamente')
     } catch (error) {
@@ -89,7 +91,8 @@ const editarProducto = async(req, resp)=>{
     try {
         const {ID} = req.usuario;
         const {id_producto,nombre, cantidad, precio_local, precio_ext, calidad} = req.body;
-        await conexion.execute(`CALL EDITARPRODUCTO(${id_producto},'${nombre}',${cantidad},${precio_local},${precio_ext},${ID}, '${calidad}', '')`)
+    
+        await conexion.execute(`CALL EDITARPRODUCTO(${id_producto},'${nombre}',${cantidad},${precio_local},${precio_ext},${ID}, '${calidad}')`)
         await conexion.commit();
         resp.json({msg:'Editado correctamente'})
     } catch (error) {
