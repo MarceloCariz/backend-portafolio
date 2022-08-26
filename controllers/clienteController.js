@@ -73,7 +73,19 @@ const autenticar = async (req,resp) =>{
 //     resp.json(usuario);
 //     // console.log('sadsad')
 // }
+const agregarDatos = async (req, resp) =>{
+    try {
+        const body = req.body;
+        const {ID} = req.usuario;
 
+        const informacion = await conexion.execute( `CALL PERFILCLIENTE(${ID}, '${body.direccion}', '${body.ciudad}', '${body.pais}')`);
+        await conexion.commit();
+        resp.json({msg: "Informacion actualizada"})
+    } catch (error) {
+        console.log(error)
+    }
+   
+}
 
 
 
@@ -81,6 +93,7 @@ export {
     obtenerClientes,
     regitrarCliente,
     autenticar,
+    agregarDatos
     // perfil
 }
 
