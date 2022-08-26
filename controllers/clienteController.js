@@ -73,6 +73,15 @@ const autenticar = async (req,resp) =>{
 //     resp.json(usuario);
 //     // console.log('sadsad')
 // }
+const traerDatosCliente = async(req, resp) =>{
+    try {
+        const {ID} = req.usuario;
+        const resultado = await conexion.execute(`select direccion, ciudad, pais from cliente where id = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        resp.json(resultado.rows[0])
+    } catch (error) {
+        console.log(error)
+    }
+}
 const agregarDatos = async (req, resp) =>{
     try {
         const body = req.body;
@@ -89,11 +98,13 @@ const agregarDatos = async (req, resp) =>{
 
 
 
+
 export {
     obtenerClientes,
     regitrarCliente,
     autenticar,
-    agregarDatos
+    agregarDatos,
+    traerDatosCliente
     // perfil
 }
 
