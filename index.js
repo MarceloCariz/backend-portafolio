@@ -4,6 +4,7 @@ import clienteRoutes from './routes/clienteRoutes.js'
 import productorRoutes from './routes/productorRoutes.js'
 import productosRoutes from './routes/productosRoutes.js'
 import usuarioRoutes from './routes/usuarioRoutes.js'
+import transportistaRoutes from './routes/transportistaRoutes.js'
 
 
 import cors from 'cors'
@@ -19,6 +20,7 @@ app.use('/api/clientes', clienteRoutes)
 app.use('/api/usuario', usuarioRoutes)
 app.use('/api/productos', productosRoutes)
 app.use('/api/productores', productorRoutes)
+app.use('/api/transportista',transportistaRoutes)
 app.use(express.urlencoded({extended: false}))
 const PORT = process.env.PORT || 4000;
 
