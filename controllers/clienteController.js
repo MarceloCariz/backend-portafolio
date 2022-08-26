@@ -7,7 +7,7 @@ const conexion =  await conectarDB();
 const saltRounds = 10;
 
 const obtenerClientes = async( req, resp) =>{
-    const sql = "SELECT * FROM CLIENTES";
+    const sql = "SELECT * FROM CLIENTE";
     const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
     // // const rs= await resultado.resultSet.getRow()
     // // console.log(await rs.NOMBRE)
@@ -22,7 +22,7 @@ const regitrarCliente = async(req,resp)=>{
       
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         body.correo = body.correo.toLowerCase();
-        const validarUsuario = await conexion.execute( `select correo from clientes where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const validarUsuario = await conexion.execute( `select correo from cliente where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // console.log(resultado)
         if(validarUsuario.rows.length === 1){
             const error = new Error("Usuario ya registrado");
@@ -33,8 +33,7 @@ const regitrarCliente = async(req,resp)=>{
         const passwordHash =  await bcrypt.hash(body.password, salt).then(function(hash) {
             return hash
         });
-        console.log(passwordHash.length)
-        const resultado = await conexion.execute( `call REGISTRARCLIENTE('${body.nombre}','${passwordHash}','${body.correo}','${token}')`); 
+        const resultado = await conexion.execute( `CALL REGISTRARCLIENTE('${body.nombre}','${passwordHash}','${body.correo}', '${body.tipo}')`); 
         await conexion.commit();
         resp.json({msg: "insertado correctamente"})
     } catch (error) {
