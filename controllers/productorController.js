@@ -87,7 +87,7 @@ const editarProducto = async(req, resp)=>{
     try {
         const {ID} = req.usuario;
         const {id_producto,nombre, cantidad, precio_local, precio_ext, calidad} = req.body;
-        await conexion.execute(`CALL EDITARPRODUCTO(${id_producto},'${nombre}',${cantidad},${precio_local},${precio_ext},${ID}, '${calidad}')`)
+        await conexion.execute(`CALL EDITARPRODUCTO(${id_producto},'${nombre}',${cantidad},${precio_local},${precio_ext},${ID}, '${calidad}', '')`)
         resp.json({msg:'Editado correctamente'})
     } catch (error) {
         console.log(error)
