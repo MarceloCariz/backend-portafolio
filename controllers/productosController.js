@@ -6,7 +6,7 @@ const conexion =  await conectarDB();
 const obtenerProductos = async(req,resp) =>{
 
     try {
-        const productos = await conexion.execute('select  id, nombre, cantidad, precio from productos',{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const productos = await conexion.execute('select  id_producto, nombre, cantidad, precio_local, precio_exp from producto',{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
 
         resp.json(productos.rows)
     } catch (error) {
