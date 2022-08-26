@@ -77,6 +77,8 @@ const eliminarProducto = async(req, resp) =>{
         const {idp} = req.params;
         console.log(idp)
         await conexion.execute(`call ELIMINARPRODUCTO(${idp},${ID})`)
+        await conexion.commit();
+
         resp.json({msg: 'Eliminado Correctamente'})
     } catch (error) {
         console.log(error)
@@ -88,6 +90,7 @@ const editarProducto = async(req, resp)=>{
         const {ID} = req.usuario;
         const {id_producto,nombre, cantidad, precio_local, precio_ext, calidad} = req.body;
         await conexion.execute(`CALL EDITARPRODUCTO(${id_producto},'${nombre}',${cantidad},${precio_local},${precio_ext},${ID}, '${calidad}', '')`)
+        await conexion.commit();
         resp.json({msg:'Editado correctamente'})
     } catch (error) {
         console.log(error)
