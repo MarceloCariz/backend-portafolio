@@ -5,11 +5,15 @@ import productorRoutes from './routes/productorRoutes.js'
 import productosRoutes from './routes/productosRoutes.js'
 import usuarioRoutes from './routes/usuarioRoutes.js'
 import transportistaRoutes from './routes/transportistaRoutes.js';
+import administradorRoutes from './routes/administradorRoutes.js'
+import subastasRoutes from './routes/subastaRoutes.js'
 import { fileURLToPath } from 'url';
 import multer from "multer";
 import dotenv from 'dotenv';
 import path from 'path'
 import cors from 'cors'
+import http from 'http';
+import { Server as SocketServer } from "socket.io";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,19 +29,60 @@ const storage = multer.diskStorage({
     },
 });
 app.use(multer({ storage: storage }).single("image"));
-
+app.use(express.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, "public")));
 // await conectarDB();
-app.use('/api/clientes', clienteRoutes)
-app.use('/api/usuario', usuarioRoutes)
-app.use('/api/productos', productosRoutes)
-app.use('/api/productores', productorRoutes)
-app.use('/api/transportista',transportistaRoutes)
+// RUTAS
+app.use('/api/clientes', clienteRoutes);
+app.use('/api/usuario', usuarioRoutes);
+app.use('/api/productos', productosRoutes);
+app.use('/api/productores', productorRoutes);
+app.use('/api/transportista',transportistaRoutes);
+app.use('/api/subasta',subastasRoutes);
+app.use('/api/admin', administradorRoutes);
+
+const server = http.createServer(app);
+const io = new SocketServer(server,{
+  cors:{
+    origin: '*'
+  }
+})
+const postulaciones = [];
+
+io.on('connection', (socket)=>{
+  console.log('Comenzo')
+  socket.on('postular', (producto)=>{
+    postulaciones.push(producto)
+
+    
+    const productosUniques = postulaciones.reduce((acc, product)=>{
+      if(!acc[product.NOMBRE]){
+        acc[product.NOMBRE] = []
+      }
+      acc[product.NOMBRE].push(product)
+
+      return acc
+    },[]);
+
+    const productosElegidos = []
+
+    for(const p in productosUniques){
+     
+      const minprecio = productosUniques[p].sort((a,b)=>(
+        a.PRECIO_EXP - b.PRECIO_EXP
+      ))
+      productosElegidos.push(minprecio[0])
+    }
+    console.log(productosElegidos)
+    // console.log( arrSinDuplicaciones );
+    // console.log(postulaciones)
+  })
 
 
-app.use(express.urlencoded({extended: false}))
+
+})
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, ()=>{
+server.listen(PORT, ()=>{
     console.log(`Servidor corriendo en el servidor ${PORT}`)
 })

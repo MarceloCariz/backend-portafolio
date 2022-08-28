@@ -1,5 +1,5 @@
 import express from 'express';
-import { registrarTransportista } from '../controllers/transportistaController.js';
+import { obtenerTransportista, registrarTransportista } from '../controllers/transportistaController.js';
 
 
 
@@ -7,6 +7,6 @@ import { registrarTransportista } from '../controllers/transportistaController.j
 const router = express.Router();
 
 router.post('/registrar', registrarTransportista)
-
+router.get('/', obtenerTransportista);
 
 export default  router
