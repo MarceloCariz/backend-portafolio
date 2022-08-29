@@ -96,6 +96,18 @@ const agregarDatos = async (req, resp) =>{
    
 }
 
+const crearPedidoExt = async(req, resp) =>{
+    const {ID} = req.usuario;
+    const body = req.body;
+    // , referencia_compra
+    const id_referencia = Math.floor(Math.random() * 1000000);
+    try {
+        await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${body.cantidad}','${body.peso}' ,  '${body.direccion}' , '${body.fecha_compra}', '${body.nombre_producto}', ${body.id_referencia})`);
+        conexion.commit();
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 
 
@@ -104,7 +116,8 @@ export {
     regitrarCliente,
     autenticar,
     agregarDatos,
-    traerDatosCliente
+    traerDatosCliente,
+    crearPedidoExt
     // perfil
 }
 

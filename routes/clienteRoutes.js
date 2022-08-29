@@ -1,5 +1,5 @@
 import express from 'express';
-import {  agregarDatos, obtenerClientes,  regitrarCliente, traerDatosCliente } from '../controllers/clienteController.js';
+import {  agregarDatos, crearPedidoExt, obtenerClientes,  regitrarCliente, traerDatosCliente } from '../controllers/clienteController.js';
 import checkAuth from '../middleware/checkAuth.js';
 
 
@@ -10,6 +10,7 @@ router.get('/', obtenerClientes);
 router.get('/informacion/',checkAuth, traerDatosCliente)
 
 router.post('/nuevo', regitrarCliente);
+router.post('/ingresar/orden', checkAuth,crearPedidoExt)
 router.put('/informacion/actualizar',checkAuth, agregarDatos)
 // router.post('/login', autenticar);
 // router.get('/perfil',checkAuth,perfil)

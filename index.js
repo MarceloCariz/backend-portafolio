@@ -49,16 +49,23 @@ const io = new SocketServer(server,{
 })
 const postulaciones = [];
 
+// io.of
 io.on('connection', (socket)=>{
   console.log('Comenzo')
-  socket.on('postular', (producto)=>{
-    postulaciones.push(producto)
+  socket.on('postular', (producto, finish)=>{
 
-    
+    for(const p  in producto){
+      postulaciones.push(producto[p])
+    }
+    // return
+    // (producto)
+
+    // console.log(postulaciones)
     const productosUniques = postulaciones.reduce((acc, product)=>{
       if(!acc[product.NOMBRE]){
         acc[product.NOMBRE] = []
       }
+      // console.log(product)
       acc[product.NOMBRE].push(product)
 
       return acc
@@ -73,11 +80,22 @@ io.on('connection', (socket)=>{
       ))
       productosElegidos.push(minprecio[0])
     }
-    console.log(productosElegidos)
     // console.log( arrSinDuplicaciones );
     // console.log(postulaciones)
+
+    // return productosElegidos
+    if(finish === true){
+      console.log(productosElegidos)
+      socket.disconnect(true)
+      console.log(socket.id, 'desconectado')
+    }
   })
 
+  // setTimeout(()=>{
+  //   console.log('PRODUCTOS -----------',productosElegidos)
+  //   socket.disconnect(true)
+  //   console.log(socket.id, 'desconectado')
+  // },15000)
 
 
 })
