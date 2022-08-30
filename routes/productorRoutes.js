@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import {  editarProducto, eliminarProducto, nuevoProducto, obtenerProductores, obtenerProductos, registrarProductor } from '../controllers/productorController.js';
+import {  editarProducto, eliminarProducto, nuevoProducto, obtenerProductores, obtenerProductos, obtenerSubastasActivas, registrarProductor } from '../controllers/productorController.js';
 import checkAuth from '../middleware/checkAuth.js';
 import checkAuthProductor from '../middleware/checkAuthProductor.js';
 
@@ -8,11 +8,12 @@ import checkAuthProductor from '../middleware/checkAuthProductor.js';
 const router = express.Router();
 
 router.get('/', obtenerProductores);
-router.post('/nuevo', registrarProductor);
 // router.post('/login', autenticar);
 // router.get('/perfil',checkAuthProductor, perfil)
+router.get('/subastas', obtenerSubastasActivas);
 router.get('/productos',checkAuth, obtenerProductos )
 router.post('/productos/nuevo',checkAuth, nuevoProducto )
+router.post('/nuevo', registrarProductor);
 router.delete('/productos/eliminar/:idp',checkAuth, eliminarProducto)
 router.put('/productos/editar',checkAuth, editarProducto)
 

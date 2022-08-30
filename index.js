@@ -86,14 +86,14 @@ io.on('connection', (socket)=>{
     }
   })
 
-  socket.on('subasta:finalizar' , async(estado)=>{
+  socket.on('subasta:finalizar' , async(estado, idCompra)=>{
     if(estado){
 
       socket.emit('client-subasta',productosElegidos);
       let promises = [];
       for(const p in productosElegidos){
         const {ID_PRODUCTO, ID_PRODUCTOR,NOMBRE} = productosElegidos[p];
-        await conexion.execute(`call ANADIRPRODUCTOEXT('256562',${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
+        await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
         await conexion.commit()
       }
       postulaciones = []

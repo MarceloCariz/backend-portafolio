@@ -100,13 +100,23 @@ const editarProducto = async(req, resp)=>{
     }
 }
 
+const obtenerSubastasActivas = async(req, resp)=>{
+    try {
+        const resultado = await conexion.execute(`select * from ord_compra where activo = 'true' `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(resultado.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     obtenerProductores,
     registrarProductor,
     eliminarProducto,
     editarProducto,
     obtenerProductos,
-    nuevoProducto
+    nuevoProducto,
+    obtenerSubastasActivas
 }
 
 
