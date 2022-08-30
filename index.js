@@ -18,6 +18,7 @@ import { Server as SocketServer } from "socket.io";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
+const conexion =  await conectarDB();
 
 app.use(express.json());
 app.use(cors());
@@ -47,20 +48,17 @@ const io = new SocketServer(server,{
     origin: '*'
   }
 })
-const postulaciones = [];
+let postulaciones = [];
+let productosElegidos = []
 
 // io.of
 io.on('connection', (socket)=>{
-  console.log('Comenzo')
   socket.on('postular', (producto, finish)=>{
 
     for(const p  in producto){
       postulaciones.push(producto[p])
     }
-    // return
-    // (producto)
 
-    // console.log(postulaciones)
     const productosUniques = postulaciones.reduce((acc, product)=>{
       if(!acc[product.NOMBRE]){
         acc[product.NOMBRE] = []
@@ -71,7 +69,7 @@ io.on('connection', (socket)=>{
       return acc
     },[]);
 
-    const productosElegidos = []
+    productosElegidos = []
 
     for(const p in productosUniques){
      
@@ -81,15 +79,29 @@ io.on('connection', (socket)=>{
       productosElegidos.push(minprecio[0])
     }
     // console.log( arrSinDuplicaciones );
-    // console.log(postulaciones)
-
-    // return productosElegidos
-    if(finish === true){
-      console.log(productosElegidos)
+    if(finish){
       socket.disconnect(true)
-      console.log(socket.id, 'desconectado')
+      return
+
     }
   })
+
+  socket.on('subasta:finalizar' , async(estado)=>{
+    if(estado){
+
+      socket.emit('client-subasta',productosElegidos);
+      let promises = [];
+      for(const p in productosElegidos){
+        const {ID_PRODUCTO, ID_PRODUCTOR,NOMBRE} = productosElegidos[p];
+        await conexion.execute(`call ANADIRPRODUCTOEXT('256562',${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
+        await conexion.commit()
+      }
+      postulaciones = []
+      socket.disconnect(true)
+      return
+    }
+ 
+})
 
   // setTimeout(()=>{
   //   console.log('PRODUCTOS -----------',productosElegidos)
