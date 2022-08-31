@@ -50,9 +50,14 @@ const io = new SocketServer(server,{
 })
 let postulaciones = [];
 let productosElegidos = []
+// const fecha = new Date(Date.now()).toLocaleString("en-US", {timeZone: "America/Santiago"});
+// console.log(fecha)
+
+// console.log(new Date(fecha))
 
 // io.of
 io.on('connection', (socket)=>{
+
   socket.on('postular', (producto, finish)=>{
 
     for(const p  in producto){

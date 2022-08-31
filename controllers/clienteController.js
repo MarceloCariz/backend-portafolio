@@ -109,7 +109,15 @@ const crearPedidoExt = async(req, resp) =>{
     }
 }
 
-
+const obtenerPedidos = async(req, resp) =>{
+    const {ID} = req.usuario;
+    try {
+        const respuesta  = await conexion.execute(`select * from ord_compra where id_cliente = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(respuesta.rows)
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 export {
     obtenerClientes,
@@ -117,7 +125,8 @@ export {
     autenticar,
     agregarDatos,
     traerDatosCliente,
-    crearPedidoExt
+    crearPedidoExt,
+    obtenerPedidos
     // perfil
 }
 
