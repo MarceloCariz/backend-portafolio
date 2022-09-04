@@ -7,13 +7,18 @@ const conexion =  await conectarDB();
 const saltRounds = 10;
 
 const obtenerProductores = async( req, resp) =>{
-    const sql = "SELECT * FROM PRODUCTOR";
-    const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-    // // const rs= await resultado.resultSet.getRow()
-    // // console.log(await rs.NOMBRE)
-    
-    // console.log(resultado.rows[0])
-    resp.json(resultado.rows)
+    try {
+        const sql = "SELECT * FROM PRODUCTOR";
+        const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        // // const rs= await resultado.resultSet.getRow()
+        // // console.log(await rs.NOMBRE)
+        
+        // console.log(resultado.rows[0])
+        resp.json(resultado.rows)
+    } catch (error) {
+        console.log(error)
+    }
+
 } 
 const registrarProductor = async(req,resp)=>{
     try {
@@ -45,16 +50,21 @@ const registrarProductor = async(req,resp)=>{
 
 
 const obtenerProductos = async(req, resp)=>{
-    const { usuario } = req; //midellwareProductor
-    const {ID} = usuario;
-    console.log(ID)
-    const sql = `SELECT * FROM PRODUCTO WHERE id_productor = ${ID}`;
-    const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-    // // const rs= await resultado.resultSet.getRow()
-    // // console.log(await rs.NOMBRE)
-    
-    // console.log(resultado.rows[0])
-    resp.json(resultado.rows)
+    try {
+        const { usuario } = req; //midellwareProductor
+        const {ID} = usuario;
+        console.log(ID)
+        const sql = `SELECT * FROM PRODUCTO WHERE id_productor = ${ID}`;
+        const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        // // const rs= await resultado.resultSet.getRow()
+        // // console.log(await rs.NOMBRE)
+        
+        // console.log(resultado.rows[0])
+        resp.json(resultado.rows)
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 const nuevoProducto = async(req, resp) =>{

@@ -18,6 +18,7 @@ import { Server as SocketServer } from "socket.io";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
+
 const conexion =  await conectarDB();
 
 app.use(express.json());

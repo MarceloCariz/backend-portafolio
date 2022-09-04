@@ -35,13 +35,18 @@ const registrarTransportista = async(req,resp)=>{
 
 }
 const obtenerTransportista= async( req, resp) =>{
-    const sql = "SELECT ID, NOMBRE  FROM transportista";
-    const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-    // // const rs= await resultado.resultSet.getRow()
-    // // console.log(await rs.NOMBRE)
-    
-    // console.log(resultado.rows[0])
-    resp.json(resultado.rows)
+    try {
+        const sql = "SELECT ID, NOMBRE  FROM transportista";
+        const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        // // const rs= await resultado.resultSet.getRow()
+        // // console.log(await rs.NOMBRE)
+        
+        // console.log(resultado.rows[0])
+        resp.json(resultado.rows)
+    } catch (error) {
+        console.log(error)
+    }
+
 } 
 export {
     registrarTransportista,
