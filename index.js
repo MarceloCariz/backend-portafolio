@@ -7,6 +7,7 @@ import usuarioRoutes from './routes/usuarioRoutes.js'
 import transportistaRoutes from './routes/transportistaRoutes.js';
 import administradorRoutes from './routes/administradorRoutes.js'
 import subastasRoutes from './routes/subastaRoutes.js'
+import trankbankRoutes from './routes/transbankRoutes.js'
 import { fileURLToPath } from 'url';
 import multer from "multer";
 import dotenv from 'dotenv';
@@ -42,6 +43,7 @@ app.use('/api/productores', productorRoutes);
 app.use('/api/transportista',transportistaRoutes);
 app.use('/api/subasta',subastasRoutes);
 app.use('/api/admin', administradorRoutes);
+app.use('/api/transbank', trankbankRoutes);
 
 const server = http.createServer(app);
 const io = new SocketServer(server,{
