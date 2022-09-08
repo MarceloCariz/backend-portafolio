@@ -20,7 +20,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 
-const conexion =  await conectarDB();
 
 app.use(express.json());
 app.use(cors());
@@ -45,6 +44,7 @@ app.use('/api/subasta',subastasRoutes);
 app.use('/api/admin', administradorRoutes);
 app.use('/api/transbank', trankbankRoutes);
 
+const conexion =  await conectarDB();
 const server = http.createServer(app);
 const io = new SocketServer(server,{
   cors:{

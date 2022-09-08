@@ -47,8 +47,96 @@ const activarSubasta = async(req, resp) =>{
 }
 
 
+//USUARIOS CRUD
+///  PRODUCTOR
+const eliminarProductor = async(req, resp) =>{
+    try {
+        const {id} = req.params;
+        await conexion.execute(`call ELIMINARPRODUCTOR(${id})`)
+        await conexion.commit();
+
+        resp.json({msg: 'Eliminado Correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const actualizarProductor = async(req, resp) =>{
+    const {id} = req.params;
+    const {nombre, correo} = req.body;
+    try {
+        await conexion.execute(`call EDITAR_PRODUCTOR(${id}, '${nombre}','${correo}' )`)
+        await conexion.commit();
+
+        resp.json({msg: 'Actualizado Correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+///  CLIENTES
+const eliminarCliente= async(req, resp) =>{
+    try {
+        const {id} = req.params;
+        await conexion.execute(`call ELIMINARCLIENTE(${id})`)
+        await conexion.commit();
+
+        resp.json({msg: 'Eliminado Correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+const actualizarCliente = async(req, resp) =>{
+    const {id} = req.params;
+    const {nombre, correo} = req.body;
+    try {
+        await conexion.execute(`call EDITAR_CLIENTE(${id}, '${nombre}','${correo}' )`)
+        await conexion.commit();
+
+        resp.json({msg: 'Actualizado Correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+////   TRANSPORTISTA
+const eliminarTransportista= async(req, resp) =>{
+    try {
+        const {id} = req.params;
+        await conexion.execute(`call ELIMINARTRANSPORTISTA(${id})`)
+        await conexion.commit();
+
+        resp.json({msg: 'Eliminado Correctamente'})
+    } catch (error) {
+        console.log(error)
+        resp.json({msg: 'hubo un error'})
+    }
+}
+
+const actualizarTransportista = async(req, resp) =>{
+    const {id} = req.params;
+    const {nombre, correo} = req.body;
+    try {
+        await conexion.execute(`call EDITAR_TRANSPORTISTA(${id}, '${nombre}','${correo}' )`)
+        await conexion.commit();
+
+        resp.json({msg: 'Actualizado Correctamente'})
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 export {
     registrarAdministrador,
-    activarSubasta
+    activarSubasta,
+
+    eliminarProductor,
+    actualizarProductor,
+
+    eliminarCliente,
+    actualizarCliente,
+
+
+    eliminarTransportista,
+    actualizarTransportista,
 }

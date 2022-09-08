@@ -104,15 +104,15 @@ const agregarDatos = async (req, resp) =>{
 
 const crearPedidoExt = async(req, resp) =>{
     const {ID} = req.usuario;
+
     const body = req.body;
+    // console.log(body)
     // , referencia_compra
     const id_referencia = Math.floor(Math.random() * 1000000);
-    try {
+
         await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${body.cantidad}','${body.peso}' ,  '${body.direccion}' , '${body.fecha_compra}', '${body.nombre_producto}', ${body.id_referencia})`);
-        conexion.commit();
-    } catch (error) {
-        console.log(error)
-    }
+        await conexion.commit();
+
 }
 
 const obtenerPedidos = async(req, resp) =>{
