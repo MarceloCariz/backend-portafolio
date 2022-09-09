@@ -118,7 +118,7 @@ const crearPedidoExt = async(req, resp) =>{
 const obtenerPedidos = async(req, resp) =>{
     const {ID} = req.usuario;
     try {
-        const respuesta  = await conexion.execute(`select * from ord_compra where id_cliente = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const respuesta  = await conexion.execute(`select * from ord_compra where id_cliente = ${ID} order by id desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         resp.json(respuesta.rows)
     } catch (error) {
         console.log(error)
