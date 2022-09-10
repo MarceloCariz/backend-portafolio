@@ -119,6 +119,15 @@ const obtenerSubastasActivas = async(req, resp)=>{
     }
 }
 
+const obtenerEnvios = async(req, resp)=>{
+    try {
+        const {ID} = req.usuario;
+        const resultado = await conexion.execute(`select * from ord_compra where id_productor = ${ID} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(resultado.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
 export {
     obtenerProductores,
     registrarProductor,
@@ -126,7 +135,8 @@ export {
     editarProducto,
     obtenerProductos,
     nuevoProducto,
-    obtenerSubastasActivas
+    obtenerSubastasActivas,
+    obtenerEnvios
 }
 
 
