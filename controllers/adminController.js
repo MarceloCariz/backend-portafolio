@@ -126,9 +126,20 @@ const actualizarTransportista = async(req, resp) =>{
     }
 }
 
+const obtenerOrdenesCompra = async(req, resp) =>{
+    try {
+        const ordCompra = await conexion.execute(`select * from ord_compra`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        await conexion.commit();
+        resp.json(ordCompra.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     registrarAdministrador,
     activarSubasta,
+    obtenerOrdenesCompra,
 
     eliminarProductor,
     actualizarProductor,

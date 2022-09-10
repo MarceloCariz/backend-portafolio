@@ -1,12 +1,12 @@
 import express from 'express';
-import { activarSubasta, actualizarCliente, actualizarProductor, actualizarTransportista, eliminarCliente, eliminarProductor, eliminarTransportista, registrarAdministrador } from '../controllers/adminController.js';
+import { activarSubasta, actualizarCliente, actualizarProductor, actualizarTransportista, eliminarCliente, eliminarProductor, eliminarTransportista, obtenerOrdenesCompra, registrarAdministrador } from '../controllers/adminController.js';
 
 
 const router = express.Router();
 
 router.post('/registrar', registrarAdministrador);
 router.put('/subasta/activar', activarSubasta)
-
+router.get('/ordenes', obtenerOrdenesCompra);
 //USUARIOS 
 //PRODUCTORES
 router.put('/productor/actualizar/:id', actualizarProductor);

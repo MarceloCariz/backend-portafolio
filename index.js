@@ -44,7 +44,6 @@ app.use('/api/subasta',subastasRoutes);
 app.use('/api/admin', administradorRoutes);
 app.use('/api/transbank', trankbankRoutes);
 
-const conexion =  await conectarDB();
 const server = http.createServer(app);
 const io = new SocketServer(server,{
   cors:{
@@ -59,6 +58,8 @@ let productosElegidos = []
 // console.log(new Date(fecha))
 
 // io.of
+const conexion =  await conectarDB();
+
 io.on('connection', (socket)=>{
 
   socket.on('postular', (producto, finish)=>{
