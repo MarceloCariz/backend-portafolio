@@ -36,7 +36,7 @@ const registrarTransportista = async(req,resp)=>{
 }
 const obtenerTransportista= async( req, resp) =>{
     try {
-        const sql = "SELECT ID, NOMBRE  FROM transportista";
+        const sql = "SELECT ID, NOMBRE,CORREO  FROM transportista";
         const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // const rs= await resultado.resultSet.getRow()
         // // console.log(await rs.NOMBRE)
