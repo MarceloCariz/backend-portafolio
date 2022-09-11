@@ -128,6 +128,21 @@ const obtenerEnvios = async(req, resp)=>{
         console.log(error)
     }
 }
+
+const confirmarEnviobodega = async(req,resp) =>{
+    try {
+        const {ID} = req.usuario;
+        const {referencia_compra} = req.body;
+        const resultado = await conexion.execute(`UPDATE ORD_COMPRA SET
+        ESTADO_ENVIO = 'bodega'
+        WHERE REFERENCIA_COMPRA =  ${referencia_compra} and id_productor = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        await conexion.commit();
+        resp.json({msg: 'Envio confirmado'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     obtenerProductores,
     registrarProductor,
@@ -136,7 +151,8 @@ export {
     obtenerProductos,
     nuevoProducto,
     obtenerSubastasActivas,
-    obtenerEnvios
+    obtenerEnvios,
+    confirmarEnviobodega,
 }
 
 

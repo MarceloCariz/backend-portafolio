@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import {  editarProducto, eliminarProducto, nuevoProducto, obtenerEnvios, obtenerProductores, obtenerProductos, obtenerSubastasActivas, registrarProductor } from '../controllers/productorController.js';
+import {  confirmarEnviobodega, editarProducto, eliminarProducto, nuevoProducto, obtenerEnvios, obtenerProductores, obtenerProductos, obtenerSubastasActivas, registrarProductor } from '../controllers/productorController.js';
 import checkAuth from '../middleware/checkAuth.js';
 import checkAuthProductor from '../middleware/checkAuthProductor.js';
 
@@ -17,7 +17,7 @@ router.post('/productos/nuevo',checkAuth, nuevoProducto )
 router.post('/nuevo', registrarProductor);
 router.delete('/productos/eliminar/:idp',checkAuth, eliminarProducto)
 router.put('/productos/editar',checkAuth, editarProducto)
-
+router.put('/envios/bodega/confirmar', checkAuth, confirmarEnviobodega);
 
 
 
