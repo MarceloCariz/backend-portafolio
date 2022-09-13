@@ -108,10 +108,28 @@ const crearPedidoExt = async(req, resp) =>{
     const body = req.body;
     // console.log(body)
     // , referencia_compra
-    const id_referencia = Math.floor(Math.random() * 1000000);
+    // const id_referencia = Math.floor(Math.random() * 1000000);
+    try {
+        // await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${body.cantidad}','${body.peso}' ,  '${body.direccion}' , '${body.fecha_compra}', '${body.nombre_producto}', ${body.id_referencia})`);
+        // await conexion.commit();
+        const productos = JSON.parse(body.products);
+        const direccion =  body.direccion;
+        const fecha = body.fecha;
+        const id_referencia = body.id_referencia;
+        // const id_referencia = body.id_referencia;
+        // console.log(body)
+        for(let  p  in productos){
+            const {CANTIDAD, NOMBRE, unidad} = productos[p];
+            // const productoFinal = { cantidad: unidad,nombre_producto: NOMBRE, peso: unidad, direccion, fecha_compra:fecha, id_referencia}
+            await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${unidad}','${unidad}' ,  '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia})`);
+            await conexion.commit();
+        }
+        resp.json('Correct')
+    } catch (error) {
+        console.log(error)
+        resp.status(400).send(error)
+    }
 
-        await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${body.cantidad}','${body.peso}' ,  '${body.direccion}' , '${body.fecha_compra}', '${body.nombre_producto}', ${body.id_referencia})`);
-        await conexion.commit();
 
 }
 
