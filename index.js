@@ -105,6 +105,8 @@ io.on('connection', (socket)=>{
         await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
         await conexion.commit()
       }
+        await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
+        await conexion.commit();
       postulaciones = []
       socket.disconnect(true)
       return
