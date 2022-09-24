@@ -23,7 +23,7 @@ const obtenerProductores = async( req, resp) =>{
 const registrarProductor = async(req,resp)=>{
     try {
         const body = req.body;
-      
+
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         const validarUsuario = await conexion.execute( `select correo from productor where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // console.log(resultado)
@@ -36,9 +36,22 @@ const registrarProductor = async(req,resp)=>{
         const passwordHash =  await bcrypt.hash(body.password, salt).then(function(hash) {
             return hash
         });
+
         body.correo = body.correo.toLowerCase();
-        const resultado = await conexion.execute( `call REGISTRARPRODUCTOR('${body.nombre}','${passwordHash}','${body.correo}')`); 
+        const id_contrato = Math.floor(Math.random() * 1000000);
+
+        const fecha = new Date(Date.now());
+        const fechaInicio = (new Date(fecha).toISOString());
+        const setMonth = fecha.setMonth(fecha.getMonth() + 1);
+        // const setMinuto = fecha.setMinutes(fecha.getMinutes() + 1);
+
+        const fechaTermino = (new Date(setMonth).toISOString());
+
+        const resultado = await conexion.execute( `call REGISTRARPRODUCTOR('${body.nombre}','${passwordHash}','${body.correo}', ${id_contrato})`); 
         await conexion.commit();
+        const contrato = await conexion.execute(`call REGISTRARCONTRATO(${id_contrato},'${fechaInicio}', '${fechaTermino}')`)
+        await conexion.commit();
+
         resp.json({msg: "insertado correctamente"})
     } catch (error) {
         console.log(error);

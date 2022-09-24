@@ -5,16 +5,19 @@ import productorRoutes from './routes/productorRoutes.js'
 import productosRoutes from './routes/productosRoutes.js'
 import usuarioRoutes from './routes/usuarioRoutes.js'
 import transportistaRoutes from './routes/transportistaRoutes.js';
-import administradorRoutes from './routes/administradorRoutes.js'
-import subastasRoutes from './routes/subastaRoutes.js'
-import trankbankRoutes from './routes/transbankRoutes.js'
+import administradorRoutes from './routes/administradorRoutes.js';
+import subastasRoutes from './routes/subastaRoutes.js';
+import trankbankRoutes from './routes/transbankRoutes.js';
+import oracledb from "oracledb"
 import { fileURLToPath } from 'url';
 import multer from "multer";
 import dotenv from 'dotenv';
 import path from 'path'
 import cors from 'cors'
 import http from 'http';
+import cron from 'node-cron';
 import { Server as SocketServer } from "socket.io";
+import { correoContrato } from "./utils/correoContrato.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +47,33 @@ app.use('/api/subasta',subastasRoutes);
 app.use('/api/admin', administradorRoutes);
 app.use('/api/transbank', trankbankRoutes);
 
+const conexion = await conectarDB();
+
+
+// CORREO SCHEDULE JOBS
+cron.schedule(' * * * * *',async()=>{
+
+  console.log('s')
+  const fechaActual = new Date();
+  const fechaT = await conexion.execute("SELECT FECHA_TERMINO ,ID_CONTRATO FROM  CONTRATO ",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+  console.log(fechaT.rows)
+  for(const f in fechaT.rows){
+    const {FECHA_TERMINO ,ID_CONTRATO} = fechaT.rows[f];
+    console.log(FECHA_TERMINO);
+    const isNegative = ( ID_CONTRATO,  new Date(FECHA_TERMINO).getTime() - fechaActual.getTime() );
+    if(isNegative < 0){
+      console.log(ID_CONTRATO);
+      const consultaCorreo = await conexion.execute(`SELECT P.CORREO  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+      const correo = consultaCorreo.rows[0].CORREO;
+      const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
+      await conexion.commit();
+      console.log(correo);
+      correoContrato(correo);
+      
+    }
+  }
+})
+///////////////////////////////////////////////////////////
 const server = http.createServer(app);
 const io = new SocketServer(server,{
   cors:{
@@ -58,9 +88,8 @@ let productosElegidos = []
 // console.log(new Date(fecha))
 
 // io.of
-const conexion =  await conectarDB();
 
-io.on('connection', (socket)=>{
+io.on('connection', async(socket)=>{
 
   socket.on('postular', (producto, finish)=>{
 
@@ -113,15 +142,11 @@ io.on('connection', (socket)=>{
     }
  
 })
-
-  // setTimeout(()=>{
-  //   console.log('PRODUCTOS -----------',productosElegidos)
-  //   socket.disconnect(true)
-  //   console.log(socket.id, 'desconectado')
-  // },15000)
-
-
 })
+
+
+// enviarNotificacionContrato();
+
 const PORT = process.env.PORT || 4000;
 
 server.listen(PORT, ()=>{
