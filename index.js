@@ -51,7 +51,7 @@ const conexion = await conectarDB();
 
 
 // CORREO SCHEDULE JOBS
-cron.schedule(' * * * * *',async()=>{
+cron.schedule('50 19 * * *',async()=>{
 
   console.log('s')
   const fechaActual = new Date();
