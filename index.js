@@ -51,7 +51,7 @@ const conexion = await conectarDB();
 
 
 // CORREO SCHEDULE JOBS
-cron.schedule('03 20 * * *',async()=>{
+cron.schedule(' 00 10 * * *',async()=>{
 
   console.log('s')
   const fechaActual = new Date();
@@ -63,16 +63,19 @@ cron.schedule('03 20 * * *',async()=>{
     const isNegative = ( ID_CONTRATO,  new Date(FECHA_TERMINO).getTime() - fechaActual.getTime() );
     if(isNegative < 0){
       console.log(ID_CONTRATO);
-      const consultaCorreo = await conexion.execute(`SELECT P.CORREO  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-      const correo = consultaCorreo.rows[0].CORREO;
-      const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
-      await conexion.commit();
-      console.log(correo);
-      correoContrato(correo);
+      const consultaCorreo = await conexion.execute(`SELECT P.CORREO, P.NOMBRE  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+      const {CORREO, NOMBRE } = consultaCorreo.rows[0];
+      // const correo = consultaCorreo.rows[0].CORREO;
+      // const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
+      // await conexion.commit();
+      // console.log(correo);
+      console.log(CORREO, NOMBRE)
+      correoContrato(CORREO, NOMBRE);
       
     }
   }
 })
+
 ///////////////////////////////////////////////////////////
 const server = http.createServer(app);
 const io = new SocketServer(server,{

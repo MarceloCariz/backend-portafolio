@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export const correoContrato = async(email) =>{
+export const correoContrato = async(CORREO, NOMBRE) =>{
 
 const transport = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -13,10 +13,12 @@ const transport = nodemailer.createTransport({
 
 let info = await transport.sendMail({
   from: '"MaipoGrande 👻" <soporte@maipogrande.com>', // sender address
-  to: email, // list of receivers
+  to: CORREO, // list of receivers
   subject: "CONTRATO CADUCADO 😭😭😭😭😭😭😭😭", // Subject line
   text: "CONTRATO CADUCADO 😭😭😭😭😭😭😭😭", // plain text body
-  html: "<b>Alerta su contrato ha terminado, por favor renovarlo con el administrador</b>", // html body
+  html: `
+  <h1>Hola ${NOMBRE}</h1>
+  <b>Alerta  su contrato ha terminado, por favor renovarlo con el administrador</b>`, // html body
 });
 
 }
