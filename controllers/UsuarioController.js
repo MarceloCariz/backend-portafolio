@@ -1,6 +1,5 @@
 import oracledb from "oracledb"
 import conectarDB from "../config/index.js"
-import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import bcrypt from 'bcrypt'
 const conexion =  await conectarDB();
@@ -25,7 +24,8 @@ const autenticarUser = async (req,resp) =>{
         }
         const validarUsuario = await conexion.execute( `select * from ${body.rol} where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
 
-        const {ID, NOMBRE, TOKEN} = validarUsuario.rows[0];
+        const {ID, NOMBRE, TOKEN } = validarUsuario.rows[0];
+        // const tipo = (TIPO_CLIENTE);
         const rol = body.rol;
         resp.json({msg: "Sesion valida",nombre: NOMBRE , token: generarJWT(ID,rol)})
     } catch (error) {

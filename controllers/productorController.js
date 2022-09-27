@@ -64,9 +64,7 @@ const registrarProductor = async(req,resp)=>{
 
 const obtenerProductos = async(req, resp)=>{
     try {
-        const { usuario } = req; //midellwareProductor
-        const {ID} = usuario;
-        console.log(ID)
+        const { ID} = req.usuario; //midellwareProductor
         const sql = `SELECT * FROM PRODUCTO WHERE id_productor = ${ID}`;
         const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // const rs= await resultado.resultSet.getRow()
@@ -86,7 +84,6 @@ const nuevoProducto = async(req, resp) =>{
         const {ID} = req.usuario;
         const {nombre, cantidad, precio_local, precio_ext, calidad} = req.body;
         const imagen = req.file.filename;
-        console.log(imagen)
         const nuevoProducto = await conexion.execute(`call REGISTRARPRODUCTO('${nombre}','${cantidad}', ${precio_local},${precio_ext},${ID},'${calidad}', '${process.env.HOST}/img/${imagen}' ) `);
         await conexion.commit();
         resp.json('anadido correctamente')
@@ -100,7 +97,6 @@ const eliminarProducto = async(req, resp) =>{
     try {
         const {ID} = req.usuario;
         const {idp} = req.params;
-        console.log(idp)
         await conexion.execute(`call ELIMINARPRODUCTO(${idp},${ID})`)
         await conexion.commit();
 
@@ -156,6 +152,18 @@ const confirmarEnviobodega = async(req,resp) =>{
     }
 }
 
+const obtenerContrato = async(req, resp)=>{
+    try {
+        const {ID} = req.usuario;
+        const sql = `select C.ID_CONTRATO, C.FECHA_INICIO, C.FECHA_TERMINO, C.SUELDO, C.ESTADO from contrato C JOIN PRODUCTOR P ON P.ID_CONTRATO = C.ID_CONTRATO WHERE P.ID = ${ID}`
+        const consulta = await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        const contrato = consulta.rows[0];
+        resp.json(contrato);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     obtenerProductores,
     registrarProductor,
@@ -166,6 +174,7 @@ export {
     obtenerSubastasActivas,
     obtenerEnvios,
     confirmarEnviobodega,
+    obtenerContrato
 }
 
 

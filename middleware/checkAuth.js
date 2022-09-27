@@ -9,10 +9,15 @@ const checkAuth = async(req, resp, next)=>{
         try {
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token,process.env.JWT_SECRET);
+            if(decoded.rol === 'cliente'){
+                req.usuario = await conexion.execute(`select id,nombre, id_rol , correo, tipo_cliente from ${decoded.rol} where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
+                req.usuario = req.usuario.rows[0] ;
+                return next(); /// se pasa al siguiente middleware es decir PERFIL
+            }
             // req.usuario =  await Usuario.findById(decoded.id).select("-password -confirmado -token -createdAt -updatedAt -__v")
             // req.usuario =  await Usuario.findById(decoded.id).select("-password -confirmado -token -createdAt -updatedAt -__v")
             req.usuario = await conexion.execute(`select id,nombre, id_rol , correo from ${decoded.rol} where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
-            req.usuario = req.usuario.rows[0];
+            req.usuario = req.usuario.rows[0] ;
             // console.log('decoded'+decoded.ID)
             // console.log('token'+token)
 
@@ -30,3 +35,6 @@ const checkAuth = async(req, resp, next)=>{
 }
 
 export default checkAuth;
+
+
+
