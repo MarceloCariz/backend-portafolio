@@ -144,12 +144,13 @@ const crearPedidoLocal = async(req, resp) =>{
         const direccion =  body.direccion;
         const fecha = body.fecha;
         const id_referencia = body.id_referencia;
+        const id_transportista = body.id_transportista;
         // const id_referencia = body.id_referencia;
         // console.log(body)
         for(let  p  in productos){
             const {CANTIDAD, NOMBRE, unidad, ID_PRODUCTOR, ID:ID_PRODUCTO, PRECIO} = productos[p];
             // const productoFinal = { cantidad: unidad,nombre_producto: NOMBRE, peso: unidad, direccion, fecha_compra:fecha, id_referencia}
-            await conexion.execute(`CALL CREARORD_COMPRA_LOCAL(${ID_CLIENTE} , ${ID_PRODUCTOR},  ${ID_PRODUCTO}, ${PRECIO}  ,'${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia})`);
+            await conexion.execute(`CALL CREARORD_COMPRA_LOCAL(${ID_CLIENTE} , ${ID_PRODUCTOR},  ${ID_PRODUCTO}, ${PRECIO}  ,'${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, ${id_transportista})`);
             await conexion.commit();
         }
         resp.json('Correct')
@@ -171,6 +172,17 @@ const obtenerPedidos = async(req, resp) =>{
     }
 }
 
+const obtenerBoleta = async(req, resp) => {
+    const {id} = req.params;
+    try {
+        const respuesta = await conexion.execute(`select monto_pagado from boleta where numero_sesion = ${id}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        // console.log(respuesta.rows[0])
+        resp.json(respuesta.rows[0])
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     obtenerClientes,
     regitrarCliente,
@@ -179,7 +191,8 @@ export {
     traerDatosCliente,
     crearPedidoExt,
     obtenerPedidos,
-    crearPedidoLocal
+    crearPedidoLocal,
+    obtenerBoleta
     // perfil
 }
 

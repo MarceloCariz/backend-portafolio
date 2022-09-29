@@ -35,7 +35,7 @@ const registrarAdministrador= async(req,resp)=>{
 
 }
 
-const activarSubasta = async(req, resp) =>{
+const activarSubasta = async(req, resp ) =>{
     try {
         const {referencia_compra,fecha_activacion,activo} = req.body;
         const resultado = await conexion.execute(`call ACTIVARORD(${referencia_compra}, '${fecha_activacion}', '${activo}')`)

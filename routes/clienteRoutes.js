@@ -1,5 +1,5 @@
 import express from 'express';
-import {  agregarDatos, crearPedidoExt, crearPedidoLocal, obtenerClientes,  obtenerPedidos,  regitrarCliente, traerDatosCliente } from '../controllers/clienteController.js';
+import {  agregarDatos, crearPedidoExt, crearPedidoLocal, obtenerBoleta, obtenerClientes,  obtenerPedidos,  regitrarCliente, traerDatosCliente } from '../controllers/clienteController.js';
 import checkAuth from '../middleware/checkAuth.js';
 
 
@@ -7,13 +7,14 @@ import checkAuth from '../middleware/checkAuth.js';
 const router = express.Router();
 
 router.get('/', obtenerClientes);
-router.get('/informacion/',checkAuth, traerDatosCliente)
-router.get('/pedidos',checkAuth, obtenerPedidos)
+router.get('/informacion/',checkAuth, traerDatosCliente);
+router.get('/pedidos',checkAuth, obtenerPedidos);
+router.get('/boleta/:id',obtenerBoleta);
 router.post('/nuevo', regitrarCliente);
 router.post('/ingresar/orden/local', checkAuth,crearPedidoLocal);
-router.post('/ingresar/orden', checkAuth,crearPedidoExt)
+router.post('/ingresar/orden', checkAuth,crearPedidoExt);
 
-router.put('/informacion/actualizar',checkAuth, agregarDatos)
+router.put('/informacion/actualizar',checkAuth, agregarDatos);
 // router.post('/login', autenticar);
 // router.get('/perfil',checkAuth,perfil)
 

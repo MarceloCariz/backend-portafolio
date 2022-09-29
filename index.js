@@ -51,16 +51,15 @@ const conexion = await conectarDB();
 
 
 // CORREO SCHEDULE JOBS
-cron.schedule(' 00 10 * * *',async()=>{
+cron.schedule(' 06 18 * * *',async()=>{
 
-  console.log('s')
   const fechaActual = new Date();
   const fechaT = await conexion.execute("SELECT FECHA_TERMINO ,ID_CONTRATO FROM  CONTRATO ",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
   console.log(fechaT.rows)
   for(const f in fechaT.rows){
     const {FECHA_TERMINO ,ID_CONTRATO} = fechaT.rows[f];
     console.log(FECHA_TERMINO);
-    const isNegative = ( ID_CONTRATO,  new Date(FECHA_TERMINO).getTime() - fechaActual.getTime() );
+    const isNegative = new Date(FECHA_TERMINO).getTime() - fechaActual.getTime() ;
     if(isNegative < 0){
       console.log(ID_CONTRATO);
       const consultaCorreo = await conexion.execute(`SELECT P.CORREO, P.NOMBRE  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
@@ -69,7 +68,6 @@ cron.schedule(' 00 10 * * *',async()=>{
       // const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
       // await conexion.commit();
       // console.log(correo);
-      console.log(CORREO, NOMBRE)
       correoContrato(CORREO, NOMBRE);
       
     }
@@ -83,18 +81,18 @@ const io = new SocketServer(server,{
     origin: '*'
   }
 })
-let postulaciones = [];
-let productosElegidos = []
 // const fecha = new Date(Date.now()).toLocaleString("en-US", {timeZone: "America/Santiago"});
 // console.log(fecha)
 
 // console.log(new Date(fecha))
 
 // io.of
+let postulaciones = [];
+let productosElegidos = [];
 
 io.on('connection', async(socket)=>{
 
-  socket.on('postular', (producto, finish)=>{
+  socket.on('postular',async (producto, fechaFinal, idCompra)=>{
 
     for(const p  in producto){
       postulaciones.push(producto[p])
@@ -120,11 +118,25 @@ io.on('connection', async(socket)=>{
       productosElegidos.push(minprecio[0])
     }
     // console.log( arrSinDuplicaciones );
-    if(finish){
-      socket.disconnect(true)
-      return
+    // const fechaActual = new Date();
 
-    }
+    // const isNegative = new Date(fechaFinal).getTime() - fechaActual.getTime() ;
+    // console.log(isNegative)
+    // if(isNegative < 0 ){
+
+    //   socket.emit('client-subasta',productosElegidos);
+    //   let promises = [];
+    //   for(const p in productosElegidos){
+    //     const {ID_PRODUCTO, ID_PRODUCTOR,NOMBRE} = productosElegidos[p];
+    //     await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
+    //     await conexion.commit()
+    //   }
+    //     await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
+    //     await conexion.commit();
+    //   postulaciones = []
+    //   socket.disconnect(true)
+    //   return
+    // }
   })
 
   socket.on('subasta:finalizar' , async(estado, idCompra)=>{

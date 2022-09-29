@@ -38,14 +38,17 @@ const validarTbk = async(req, resp) =>{
         // console.log(token)
         const response = await tx.commit(token);
 
-
+        // vci, amount, status, session_id,transaction_date
         if(response.status === 'AUTHORIZED'){
+            await conexion.execute(`CALL CREARBOLETA( '${response.status}', '${response.amount}',  '${response.session_id}', '${response.transaction_date}')`)
             const actualizarPago = await conexion.execute(`CALL EDIT_ESTADO_PAGO('${response.session_id}', 'PAGADO')`);
             await conexion.commit();
             resp.json(response);
             return
         }
+        await conexion.execute(`CALL CREARBOLETA( '${response.status}', '${response.amount}',  '${response.session_id}', '${response.transaction_date}')`)
         const actualizarPago = await conexion.execute(`CALL EDIT_ESTADO_PAGO('${response.session_id}', 'RECHAZADO')`);
+        
         await conexion.commit();
         // resp.json({msg: 'Pago Rechazado'})
         resp.json(response);
