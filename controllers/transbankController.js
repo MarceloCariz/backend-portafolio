@@ -14,7 +14,7 @@ const iniciarTbk = async(req, resp) =>{
         const {ID} = req.usuario;
         const {total, id_referencia} = req.body;
                                                                                                 // "http://maipogrande.ml/inicio/pago"
-        const crearTx = await tx.create(`Maipogrande-${id_referencia}`, `${id_referencia}`, total, "http://localhost:3000/inicio/pago");
+        const crearTx = await tx.create(`Maipogrande-${id_referencia}`, `${id_referencia}`, total, "http://maipogrande.ml/inicio/pago");
         // // const response = await tx.create(buyOrder, sessionId, amount, returnUrl);
         // // resp.json({url: response.ulr, token: response.token})
         // // const response = await tx.commit(crearTx.token);
