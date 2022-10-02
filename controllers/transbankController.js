@@ -40,7 +40,7 @@ const validarTbk = async(req, resp) =>{
         const res = await tx.status(token);
         // console.log(res)
         if(res.vci === undefined){
-            const actualizarPago = await conexion.execute(`CALL EDIT_ESTADO_PAGO('${res.session_id}', 'RECHAZADO')`);
+            const actualizarPago = await conexion.execute(`CALL CANCELAR_ESTADO_PAGO('${res.session_id}', 'RECHAZADO')`);
             await conexion.commit();
             resp.json(res)
             return
@@ -58,7 +58,7 @@ const validarTbk = async(req, resp) =>{
             return
         }
         // await conexion.execute(`CALL CREARBOLETA( '${response.status}', '${response.amount}',  '${response.session_id}', '${response.transaction_date}')`)
-        const actualizarPago = await conexion.execute(`CALL EDIT_ESTADO_PAGO('${response.session_id}', 'RECHAZADO')`);
+        const actualizarPago = await conexion.execute(`CALL CANCELAR_ESTADO_PAGO('${response.session_id}', 'RECHAZADO')`);
         
         await conexion.commit();
         // resp.json({msg: 'Pago Rechazado'})
