@@ -89,9 +89,11 @@ const io = new SocketServer(server,{
 // io.of
 let postulaciones = [];
 let productosElegidos = [];
+let postulacionesTransportista= [];
+let seleccionadoTransportista = [];
+
 
 io.on('connection', async(socket)=>{
-
   socket.on('postular',async (producto, fechaFinal, idCompra)=>{
 
     for(const p  in producto){
@@ -117,27 +119,7 @@ io.on('connection', async(socket)=>{
       ))
       productosElegidos.push(minprecio[0])
     }
-    // console.log( arrSinDuplicaciones );
-    // const fechaActual = new Date();
-
-    // const isNegative = new Date(fechaFinal).getTime() - fechaActual.getTime() ;
-    // console.log(isNegative)
-    // if(isNegative < 0 ){
-
-    //   socket.emit('client-subasta',productosElegidos);
-    //   let promises = [];
-    //   for(const p in productosElegidos){
-    //     const {ID_PRODUCTO, ID_PRODUCTOR,NOMBRE} = productosElegidos[p];
-    //     await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
-    //     await conexion.commit()
-    //   }
-    //     await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
-    //     await conexion.commit();
-    //   postulaciones = []
-    //   socket.disconnect(true)
-    //   return
-    // }
-  })
+})
 
   socket.on('subasta:finalizar' , async(estado, idCompra)=>{
     if(estado){
@@ -155,8 +137,53 @@ io.on('connection', async(socket)=>{
       socket.disconnect(true)
       return
     }
- 
 })
+socket.on('postularT',async (transt)=>{
+    postulacionesTransportista.push(transt);
+})
+
+socket.on('finalizarT' , async(estado, idCompra, cantidad)=>{
+  if(estado){
+      for(const t in postulacionesTransportista){
+        console.log(postulacionesTransportista[t].CARGA);
+        if(postulacionesTransportista[t].CARGA >= cantidad){
+            seleccionadoTransportista.push(postulacionesTransportista[t]);
+        }
+      }
+      const transportista = seleccionadoTransportista.sort((a, b) => a.PRECIO - b.PRECIO);
+      await conexion.execute(`call ANADIR_TRANSPORTISTA_EXT(${idCompra},${transportista[0].ID})`)
+      await conexion.commit()
+      await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
+      await conexion.commit();
+      postulacionesTransportista= [];
+      seleccionadoTransportista= [];
+      return;
+  }})
+
+  // if(estado){
+
+  //   socket.emit('client-subasta',productosElegidos);
+  //   let promises = [];
+  //   const precio = seleccionado.sort((a, b) => a.precio - b.precio);
+
+  //   for(const p in productosElegidos){
+  //     const {ID_PRODUCTO, ID_PRODUCTOR,NOMBRE} = productosElegidos[p];
+  //     await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`)
+  //     await conexion.commit()
+  //   }
+  //     await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
+  //     await conexion.commit();
+  //   postulaciones = []
+  //   socket.disconnect(true)
+  //   return
+  // }
+
+
+
+
+
+
+
 })
 
 

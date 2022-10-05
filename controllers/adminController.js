@@ -45,7 +45,17 @@ const activarSubasta = async(req, resp ) =>{
         console.log(error)
     }
 }
-
+// ACTIVARORD_TRANSPORTISTA
+const activarSubastaTransportista = async(req, resp ) =>{
+    try {
+        const {referencia_compra,fecha_activacion,activo} = req.body;
+        const resultado = await conexion.execute(`call ACTIVARORD_TRANSPORTISTA(${referencia_compra}, '${fecha_activacion}', '${activo}')`)
+        await conexion.commit();
+        resp.json({msg: "activado correctamente"})
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 //USUARIOS CRUD
 ///  PRODUCTOR
@@ -150,4 +160,5 @@ export {
 
     eliminarTransportista,
     actualizarTransportista,
+    activarSubastaTransportista
 }
