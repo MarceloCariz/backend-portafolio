@@ -102,6 +102,7 @@ const agregarDatos = async (req, resp) =>{
    
 }
 
+
 const crearPedidoExt = async(req, resp) =>{
     const {ID, TIPO_CLIENTE} = req.usuario;
 
