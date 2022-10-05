@@ -46,9 +46,29 @@ const obtenerTransportista= async( req, resp) =>{
     } catch (error) {
         console.log(error)
     }
-
 } 
+
+const obtenerSubastasActivas = async(req, resp)=>{
+    try {
+        const resultado = await conexion.execute(`select * from ord_compra where activo = 'true' and estado_envio = 'bodega' and tipo_venta = 'externo' `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(resultado.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const obtenerPerfil = async(req,resp) =>{
+    const {ID} = req.usuario;
+    try {
+        const perfil = await conexion.execute(`select * from transportista where id = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(perfil.rows[0]);
+    } catch (error) {
+        console.log(error)
+    }
+}
 export {
     registrarTransportista,
-    obtenerTransportista
+    obtenerTransportista,
+    obtenerSubastasActivas,
+    obtenerPerfil
 }

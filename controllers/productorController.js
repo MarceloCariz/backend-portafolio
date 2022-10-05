@@ -121,7 +121,7 @@ const editarProducto = async(req, resp)=>{
 
 const obtenerSubastasActivas = async(req, resp)=>{
     try {
-        const resultado = await conexion.execute(`select * from ord_compra where activo = 'true' `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const resultado = await conexion.execute(`select * from ord_compra where activo = 'true' and estado_envio = 'pendiente' `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         resp.json(resultado.rows);
     } catch (error) {
         console.log(error)
