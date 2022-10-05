@@ -96,6 +96,6 @@ export {
     obtenerTransportista,
     perfilTransportista,
     traerDatos,
-     obtenerSubastasActivas,
+    obtenerSubastasActivas,
     obtenerPerfil
 }

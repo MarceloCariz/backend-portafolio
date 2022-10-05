@@ -1,16 +1,14 @@
 import nodemailer from 'nodemailer';
 
 export const correoContrato = async(CORREO, NOMBRE) =>{
-
 const transport = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
   auth: {
-    user: "marcelocariz4@gmail.com",
-    pass: "fvyygyfshmshlxto"
+    user: process.env.CORREO_HOST,
+    pass: process.env.CONTRASENA_CORREO
   }
 });
-
 let info = await transport.sendMail({
   from: '"MaipoGrande 👻" <soporte@maipogrande.com>', // sender address
   to: CORREO, // list of receivers
