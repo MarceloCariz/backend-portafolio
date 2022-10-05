@@ -1,5 +1,5 @@
 import express from 'express';
-import { activarSubasta, actualizarCliente, actualizarProductor, actualizarTransportista, eliminarCliente, eliminarProductor, eliminarTransportista, obtenerOrdenesCompra, registrarAdministrador } from '../controllers/adminController.js';
+import { activarSubasta, activarSubastaTransportista, actualizarCliente, actualizarProductor, actualizarTransportista, eliminarCliente, eliminarProductor, eliminarTransportista, obtenerOrdenesCompra, registrarAdministrador } from '../controllers/adminController.js';
 
 
 const router = express.Router();
@@ -19,4 +19,5 @@ router.delete('/cliente/eliminar/:id', eliminarCliente);
 //transportista
 router.put('/transportista/actualizar/:id',actualizarTransportista);
 router.delete('/transportista/eliminar/:id', eliminarTransportista);
+router.put('/subasta/transportista/activar', activarSubastaTransportista);
 export default router

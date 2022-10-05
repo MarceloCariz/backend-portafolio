@@ -20,7 +20,6 @@ const checkAuth = async(req, resp, next)=>{
             req.usuario = req.usuario.rows[0] ;
             // console.log('decoded'+decoded.ID)
             // console.log('token'+token)
-
             // console.log(req.usuario)
             return next(); /// se pasa al siguiente middleware es decir PERFIL
         } catch (error) {

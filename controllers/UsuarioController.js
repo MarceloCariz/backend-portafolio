@@ -38,7 +38,6 @@ const autenticarUser = async (req,resp) =>{
 const perfil = async(req, resp) =>{
     const { usuario } = req;
     resp.json(usuario);
-    // console.log('sadsad')
 }
 
 export {
