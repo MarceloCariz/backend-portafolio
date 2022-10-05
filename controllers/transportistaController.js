@@ -47,8 +47,33 @@ const obtenerTransportista= async( req, resp) =>{
         console.log(error)
     }
 
-} 
+}
+
+const perfilTransportista = async (req, resp) =>{
+    try {
+        const body = req.body;
+        const {ID} = req.usuario;
+        const informacion = await conexion.execute( `CALL PERFILTRANSPORTISTA(${ID},${body.tamano},${body.capacidad}, ${body.carga}, '${body.refrigeracion}', ${body.precio})`);
+        await conexion.commit();
+        resp.json({msg: "Informacion actualizada"})
+    } catch (error) {
+        console.log(error)
+    }
+   
+}
+const traerDatos = async(req, resp) =>{
+    try {
+        const {ID} = req.usuario;
+        const resultado = await conexion.execute(`select tamano, capacidad, carga, refrigeracion, precio from transportista where id = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        resp.json(resultado.rows[0])
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     registrarTransportista,
-    obtenerTransportista
+    obtenerTransportista,
+    perfilTransportista,
+    traerDatos
 }
