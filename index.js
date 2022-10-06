@@ -51,22 +51,19 @@ const conexion = await conectarDB();
 
 
 // CORREO SCHEDULE JOBS
-cron.schedule(' 06 18 * * *',async()=>{
+cron.schedule(' 15 09 * * *',async()=>{
 
   const fechaActual = new Date();
   const fechaT = await conexion.execute("SELECT FECHA_TERMINO ,ID_CONTRATO FROM  CONTRATO ",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-  console.log(fechaT.rows)
   for(const f in fechaT.rows){
     const {FECHA_TERMINO ,ID_CONTRATO} = fechaT.rows[f];
-    console.log(FECHA_TERMINO);
     const isNegative = new Date(FECHA_TERMINO).getTime() - fechaActual.getTime() ;
     if(isNegative < 0){
-      console.log(ID_CONTRATO);
       const consultaCorreo = await conexion.execute(`SELECT P.CORREO, P.NOMBRE  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
       const {CORREO, NOMBRE } = consultaCorreo.rows[0];
       // const correo = consultaCorreo.rows[0].CORREO;
-      // const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
-      // await conexion.commit();
+      const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
+      await conexion.commit();
       // console.log(correo);
       correoContrato(CORREO, NOMBRE);
       
