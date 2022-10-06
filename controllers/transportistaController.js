@@ -125,6 +125,6 @@ export {
     obtenerSubastasActivas,
     obtenerPerfil,
     obtenerEnvios,
-    confirmarPedidoenviado
+    confirmarPedidoenviado,
     envios-transportista
 }
