@@ -90,12 +90,40 @@ const obtenerPerfil = async(req,resp) =>{
     }
 }
 
+const obtenerEnvios = async(req, resp)=>{
+    try {
+        const {ID} = req.usuario;
+        const resultado = await conexion.execute(`select * from ord_compra where id_transportista = ${ID} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(resultado.rows);
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const confirmarPedidoenviado = async(req,resp) =>{
+    try {
+        const {ID} = req.usuario;
+        const {referencia_compra} = req.body;
+        const resultado = await conexion.execute(`UPDATE ORD_COMPRA SET
+        ESTADO_ENVIO = 'enviado'
+        WHERE REFERENCIA_COMPRA =  ${referencia_compra} and id_transportista = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        await conexion.commit();
+        resp.json({msg: 'Envio confirmado'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 export {
     registrarTransportista,
     obtenerTransportista,
     perfilTransportista,
     traerDatos,
-     obtenerSubastasActivas,
-    obtenerPerfil
+    obtenerSubastasActivas,
+    obtenerPerfil,
+    obtenerEnvios,
+    confirmarPedidoenviado
 }

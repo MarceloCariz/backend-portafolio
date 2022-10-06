@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { obtenerPerfil, obtenerSubastasActivas, obtenerTransportista, registrarTransportista, perfilTransportista, traerDatos } from '../controllers/transportistaController.js';
+import { obtenerPerfil, obtenerSubastasActivas, obtenerTransportista, registrarTransportista, perfilTransportista, traerDatos, obtenerEnvios, confirmarPedidoenviado} from '../controllers/transportistaController.js';
 import checkAuth from '../middleware/checkAuth.js';
 
 
@@ -13,6 +13,8 @@ router.get('/', obtenerTransportista);
 router.put('/informacion/actualizar',checkAuth, perfilTransportista);
 router.get('/informacion/', checkAuth, traerDatos);
 router.get('/subastas',obtenerSubastasActivas);
-router.get('/perfil',checkAuth,obtenerPerfil)
+router.get('/perfil',checkAuth,obtenerPerfil);
+router.get('/envios', checkAuth, obtenerEnvios);
+router.put('/envios/enviado/confirmar', checkAuth, confirmarPedidoenviado);
 
 export default  router
