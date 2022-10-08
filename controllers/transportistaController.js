@@ -106,9 +106,7 @@ const confirmarPedidoenviado = async(req,resp) =>{
     try {
         const {ID} = req.usuario;
         const {referencia_compra} = req.body;
-        const resultado = await conexion.execute(`UPDATE ORD_COMPRA SET
-        ESTADO_ENVIO = 'enviado'
-        WHERE REFERENCIA_COMPRA =  ${referencia_compra} and id_transportista = ${ID}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const resultado = await conexion.execute(`call ESTADOENVIADO (${referencia_compra},${ID})`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         await conexion.commit();
         resp.json({msg: 'Envio confirmado'})
     } catch (error) {
