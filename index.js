@@ -139,21 +139,30 @@ socket.on('postularT',async (transt)=>{
     postulacionesTransportista.push(transt);
 })
 
-socket.on('finalizarT' , async(estado, idCompra, cantidad)=>{
+socket.on('finalizar:T' , async(estado, idCompra, id)=>{
+
   if(estado){
-      for(const t in postulacionesTransportista){
-        console.log(postulacionesTransportista[t].CARGA);
-        if(postulacionesTransportista[t].CARGA >= cantidad){
-            seleccionadoTransportista.push(postulacionesTransportista[t]);
-        }
-      }
-      const transportista = seleccionadoTransportista.sort((a, b) => a.PRECIO - b.PRECIO);
-      await conexion.execute(`call ANADIR_TRANSPORTISTA_EXT(${idCompra},${transportista[0].ID})`)
-      await conexion.commit()
-      await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
-      await conexion.commit();
-      postulacionesTransportista= [];
-      seleccionadoTransportista= [];
+      // for(const t in postulacionesTransportista){
+            // seleccionadoTransportista.push(postulacionesTransportista[t]);
+            const filtrado= postulacionesTransportista.filter(({REFERENCIA_COMPRA})=>(REFERENCIA_COMPRA === idCompra));
+            // const existe = postulacionesTransportista.some(({ID})=>(ID === id));
+            if(filtrado.length <= 0){
+              await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
+              await conexion.commit();
+              return;
+            };
+            // if(existe === false) return;
+            const transportista = filtrado.sort((a, b) => a.PRECIO - b.PRECIO);
+            if(transportista[0].ID !== id ) return;
+
+            await conexion.execute(`call ANADIR_TRANSPORTISTA_EXT(${idCompra},${transportista[0].ID})`)
+            await conexion.commit();
+            const mensaje = 'Tu ganaste la subasta!'
+            socket.emit('transportista-mensaje',mensaje, transportista[0].ID, idCompra);
+            postulacionesTransportista= [];
+            seleccionadoTransportista= [];
+
+
       return;
   }})
 

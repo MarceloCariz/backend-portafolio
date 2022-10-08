@@ -126,5 +126,4 @@ export {
     obtenerPerfil,
     obtenerEnvios,
     confirmarPedidoenviado,
-    envios-transportista
 }
