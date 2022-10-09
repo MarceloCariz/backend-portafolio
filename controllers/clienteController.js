@@ -118,12 +118,13 @@ const crearPedidoExt = async(req, resp) =>{
         const direccion =  body.direccion;
         const fecha = body.fecha;
         const id_referencia = body.id_referencia;
+        const refigeracion =  body.refigeracion;
         // const id_referencia = body.id_referencia;
         // console.log(body)
         for(let  p  in productos){
             const {CANTIDAD, NOMBRE, unidad} = productos[p];
             // const productoFinal = { cantidad: unidad,nombre_producto: NOMBRE, peso: unidad, direccion, fecha_compra:fecha, id_referencia}
-            await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia})`);
+            await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, '${refigeracion}')`);
             await conexion.commit();
         }
         resp.json('Correct')

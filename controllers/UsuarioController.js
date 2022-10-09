@@ -9,12 +9,13 @@ const conexion =  await conectarDB();
 const autenticarUser = async (req,resp) =>{
     try {
         const body = req.body;
-        const correo = await conexion.execute( `select correo from ${body.rol} where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const correoBody = body.correo.toLowerCase();
+        const correo = await conexion.execute( `select correo from ${body.rol} where correo = '${correoBody}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         if(correo.rows.length === 0){
             const error = new Error("Contraseña o correo incorrectos");
             return resp.status(400).json({ msg: error.message });
         }
-        const contrasena = await conexion.execute( `select contrasena from ${body.rol} where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const contrasena = await conexion.execute( `select contrasena from ${body.rol} where correo = '${correoBody}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         const validacionContrasena = await bcrypt.compare( body.password, contrasena.rows[0].CONTRASENA);
 
@@ -22,7 +23,7 @@ const autenticarUser = async (req,resp) =>{
             const error = new Error("Contraseña o correo incorrectos");
             return resp.status(400).json({ msg: error.message });
         }
-        const validarUsuario = await conexion.execute( `select * from ${body.rol} where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const validarUsuario = await conexion.execute( `select * from ${body.rol} where correo = '${correoBody}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
 
         const {ID, NOMBRE, TOKEN } = validarUsuario.rows[0];
         // const tipo = (TIPO_CLIENTE);
