@@ -155,10 +155,21 @@ const confirmarEnviobodega = async(req,resp) =>{
 const obtenerContrato = async(req, resp)=>{
     try {
         const {ID} = req.usuario;
-        const sql = `select C.ID_CONTRATO, C.FECHA_INICIO, C.FECHA_TERMINO, C.SUELDO, C.ESTADO from contrato C JOIN PRODUCTOR P ON P.ID_CONTRATO = C.ID_CONTRATO WHERE P.ID = ${ID}`
+        const sql = `select C.ID_CONTRATO, C.FECHA_INICIO, C.FECHA_TERMINO, C.SUELDO, C.ESTADO, C.RENOVACION from contrato C JOIN PRODUCTOR P ON P.ID_CONTRATO = C.ID_CONTRATO WHERE P.ID = ${ID}`
         const consulta = await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
         const contrato = consulta.rows[0];
         resp.json(contrato);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const solicitudRenovacionContrato = async(req, resp) =>{
+    try {
+        const {id_contrato} = req.params;
+        await conexion.execute(`call SOLICITUD_CONTRATO(${id_contrato})`);
+        await conexion.commit();
+        resp.json('Solicitado con exito');
     } catch (error) {
         console.log(error)
     }
@@ -174,7 +185,8 @@ export {
     obtenerSubastasActivas,
     obtenerEnvios,
     confirmarEnviobodega,
-    obtenerContrato
+    obtenerContrato,
+    solicitudRenovacionContrato
 }
 
 

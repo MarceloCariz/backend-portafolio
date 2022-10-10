@@ -146,6 +146,18 @@ const obtenerOrdenesCompra = async(req, resp) =>{
     }
 }
 
+const renovacionContrato = async(req, resp) =>{
+    try {
+        const {id_contrato,fecha_inicio, fecha_termino} = req.body;
+        await conexion.execute(`call RENOVACION_CONTRATO(${id_contrato},'${fecha_inicio}','${fecha_termino}')`);
+        await conexion.commit();
+        resp.json('renovacion exitosa');
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 export {
     registrarAdministrador,
     activarSubasta,
@@ -160,5 +172,7 @@ export {
 
     eliminarTransportista,
     actualizarTransportista,
-    activarSubastaTransportista
+    activarSubastaTransportista,
+
+    renovacionContrato
 }
