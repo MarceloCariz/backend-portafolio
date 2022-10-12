@@ -1,5 +1,5 @@
 import express from 'express';
-import {  agregarDatos, crearPedidoExt, crearPedidoLocal, obtenerBoleta, obtenerClientes,  obtenerPedidos,  regitrarCliente, traerDatosCliente } from '../controllers/clienteController.js';
+import {  agregarDatos, confirmarRecepcionPedidoLocal, crearPedidoExt, crearPedidoLocal, obtenerBoleta, obtenerClientes,  obtenerPedidos,  regitrarCliente, traerDatosCliente } from '../controllers/clienteController.js';
 import checkAuth from '../middleware/checkAuth.js';
 
 
@@ -15,6 +15,7 @@ router.post('/ingresar/orden/local', checkAuth,crearPedidoLocal);
 router.post('/ingresar/orden', checkAuth,crearPedidoExt);
 
 router.put('/informacion/actualizar',checkAuth, agregarDatos);
+router.put('/pedido/confirmar/:id', confirmarRecepcionPedidoLocal);
 // router.post('/login', autenticar);
 // router.get('/perfil',checkAuth,perfil)
 

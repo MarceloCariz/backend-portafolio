@@ -167,7 +167,7 @@ const crearPedidoLocal = async(req, resp) =>{
 const obtenerPedidos = async(req, resp) =>{
     const {ID} = req.usuario;
     try {
-        const respuesta  = await conexion.execute(`select * from ord_compra where id_cliente = ${ID} order by id desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const respuesta  = await conexion.execute(`select * from ord_compra where id_cliente = ${ID} order by fecha_compra desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         resp.json(respuesta.rows)
     } catch (error) {
         console.log(error)
@@ -185,6 +185,17 @@ const obtenerBoleta = async(req, resp) => {
     }
 }
 
+const confirmarRecepcionPedidoLocal  = async(req, resp) =>{
+    const {id:referencia_compra} = req.params;
+    try {
+        await conexion.execute(`call RECEPCION_ENVIO_ACEPTADO_LOCAL(${referencia_compra})`);
+        await conexion.commit();
+        resp.json('Confirmación exitosa');
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export {
     obtenerClientes,
     regitrarCliente,
@@ -194,7 +205,8 @@ export {
     crearPedidoExt,
     obtenerPedidos,
     crearPedidoLocal,
-    obtenerBoleta
+    obtenerBoleta,
+    confirmarRecepcionPedidoLocal
     // perfil
 }
 
