@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import {  confirmarEnviobodega, editarProducto, eliminarProducto, nuevoProducto, obtenerContrato, 
-    obtenerEnvios, obtenerProductores, obtenerProductos, obtenerSubastasActivas, registrarProductor, 
+    obtenerEnvios, obtenerEnviosCompletados, obtenerProductores, obtenerProductos, obtenerSubastasActivas, registrarProductor, 
     solicitudRenovacionContrato 
 } from '../controllers/productorController.js';
 import checkAuth from '../middleware/checkAuth.js';
@@ -16,6 +16,7 @@ router.get('/', obtenerProductores);
 router.get('/subastas', obtenerSubastasActivas);
 router.get('/productos',checkAuth, obtenerProductos )
 router.get('/envios',checkAuth, obtenerEnvios);
+router.get('/envios/completados',  checkAuth, obtenerEnviosCompletados)
 router.get('/contrato', checkAuth, obtenerContrato);
 router.post('/productos/nuevo',checkAuth, nuevoProducto )
 router.post('/nuevo', registrarProductor);

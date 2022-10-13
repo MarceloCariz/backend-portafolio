@@ -138,6 +138,16 @@ const obtenerEnvios = async(req, resp)=>{
     }
 }
 
+const obtenerEnviosCompletados = async(req,resp) =>{
+    try {
+        const {ID} = req.usuario;
+        const resultado = await conexion.execute(`select * from ord_compra where id_productor = ${ID} and ESTADO_ENVIO = 'recibido'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        resp.json(resultado.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 const confirmarEnviobodega = async(req,resp) =>{
     try {
         const {ID} = req.usuario;
@@ -182,9 +192,10 @@ export {
     nuevoProducto,
     obtenerSubastasActivas,
     obtenerEnvios,
+    obtenerEnviosCompletados,
     confirmarEnviobodega,
     obtenerContrato,
-    solicitudRenovacionContrato
+    solicitudRenovacionContrato,
 }
 
 
