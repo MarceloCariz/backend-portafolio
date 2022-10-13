@@ -64,7 +64,7 @@ const registrarProductor = async(req,resp)=>{
 
 const obtenerProductos = async(req, resp)=>{
     try {
-        const { ID} = req.usuario; //midellwareProductor
+        const { ID } = req.usuario; //midellwareProductor
         const sql = `SELECT * FROM PRODUCTO WHERE id_productor = ${ID}`;
         const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // const rs= await resultado.resultSet.getRow()

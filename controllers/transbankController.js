@@ -1,3 +1,4 @@
+import oracledb from "oracledb"
 import pkg
  from 'transbank-sdk';
 import conectarDB from '../config/index.js';
@@ -15,6 +16,8 @@ const iniciarTbk = async(req, resp) =>{
         const {total, id_referencia} = req.body;
                                                                                                 // "http://maipogrande.ml/inicio/pago"
         const crearTx = await tx.create(`Maipogrande-${id_referencia}`, `${id_referencia}`, total, "http://maipogrande.ml/inicio/pago");
+        // const crearTx = await tx.create(`Maipogrande-${id_referencia}`, `${id_referencia}`, total, "http://localhost:3000/inicio/pago");
+
         // // const response = await tx.create(buyOrder, sessionId, amount, returnUrl);
         // // resp.json({url: response.ulr, token: response.token})
         // // const response = await tx.commit(crearTx.token);
@@ -51,8 +54,16 @@ const validarTbk = async(req, resp) =>{
 
         // vci, amount, status, session_id,transaction_date
         if(response.status === 'AUTHORIZED'){
+            const validarBoleta = await conexion.execute(`select numero_sesion from boleta where numero_sesion = ${response.session_id}`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+            // console.log(validarBoleta.rows.length > 0);
+            // console.log(validarBoleta.rows.length);
+            if(validarBoleta.rows.length > 0){
+                resp.json(response);
+                return;
+            }
             await conexion.execute(`CALL CREARBOLETA( '${response.status}', '${response.amount}',  '${response.session_id}', '${response.transaction_date}')`)
-            const actualizarPago = await conexion.execute(`CALL EDIT_ESTADO_PAGO('${response.session_id}', 'PAGADO')`);
+            await conexion.commit();
+            await conexion.execute(`CALL EDIT_ESTADO_PAGO('${response.session_id}', 'PAGADO')`);
             await conexion.commit();
             resp.json(response);
             return

@@ -10,7 +10,7 @@ const checkAuth = async(req, resp, next)=>{
             token = req.headers.authorization.split(' ')[1];
             const decoded = jwt.verify(token,process.env.JWT_SECRET);
             if(decoded.rol === 'cliente'){
-                req.usuario = await conexion.execute(`select id,nombre, id_rol , correo, tipo_cliente from ${decoded.rol} where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
+                req.usuario = await conexion.execute(`select id,nombre, id_rol , correo, tipo_cliente, rut from ${decoded.rol} where ID = '${decoded.id}'`,{},{outFormat: OracleDB.OUT_FORMAT_OBJECT})
                 req.usuario = req.usuario.rows[0] ;
                 return next(); /// se pasa al siguiente middleware es decir PERFIL
             }

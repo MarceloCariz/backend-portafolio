@@ -25,7 +25,7 @@ const obtenerClientes = async( req, resp) =>{
 const regitrarCliente = async(req,resp)=>{
     try {
         const body = req.body;
-      
+        console.log(body)
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         body.correo = body.correo.toLowerCase();
         const validarUsuario = await conexion.execute( `select correo from cliente where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
@@ -39,7 +39,7 @@ const regitrarCliente = async(req,resp)=>{
         const passwordHash =  await bcrypt.hash(body.password, salt).then(function(hash) {
             return hash
         });
-        const resultado = await conexion.execute( `CALL REGISTRARCLIENTE('${body.nombre}','${passwordHash}','${body.correo}', '${body.tipo}')`); 
+        const resultado = await conexion.execute( `CALL REGISTRARCLIENTE('${body.nombre}','${passwordHash}','${body.correo}', '${body.tipo}', '${body.rut}')`); 
         await conexion.commit();
         resp.json({msg: "insertado correctamente"})
     } catch (error) {
