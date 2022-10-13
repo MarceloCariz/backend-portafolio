@@ -130,7 +130,7 @@ io.on('connection', async(socket)=>{
   socket.on('subasta:finalizar' , async(estado, idCompra, NOMBRE_PRODUCTO, id)=>{
     if(estado){
       const elegidosPorIdCompra = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE})=>(REFERENCIA_COMPRA === idCompra && NOMBRE === NOMBRE_PRODUCTO));
-      const idCompravacio =postulaciones.filter(({REFERENCIA_COMPRA})=>(REFERENCIA_COMPRA === idCompra ))
+      // const idCompravacio =postulaciones.filter(({REFERENCIA_COMPRA})=>(REFERENCIA_COMPRA === idCompra ))
       // console.log(elegidosPorIdCompra.sort((a,b)=>(a.PRECIO_EXP - b.PRECIO_EXP)));
       if(elegidosPorIdCompra.length <= 0){
         await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
@@ -138,16 +138,21 @@ io.on('connection', async(socket)=>{
         return;
       };
       const ordenarMinprecio = elegidosPorIdCompra.sort((a,b)=>(a.PRECIO_EXP - b.PRECIO_EXP));
-      if(ordenarMinprecio[0].ID_PRODUCTOR !== id ) return;
+  
       
       const {ID_PRODUCTO, ID_PRODUCTOR,NOMBRE} = ordenarMinprecio[0];
       
       await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`);
       await conexion.commit();
 
-      socket.emit('client-subasta',ordenarMinprecio[0]);
+      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE})=>(REFERENCIA_COMPRA !== idCompra ));
 
-      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE})=>(REFERENCIA_COMPRA !== idCompra && NOMBRE !== NOMBRE_PRODUCTO ));
+      if(ordenarMinprecio[0].ID_PRODUCTOR !== id ) return;
+      const mensaje = 'Tu ganaste la subasta!'
+      // socket.emit('transportista-mensaje');
+      socket.emit('client-subasta',mensaje, id, idCompra, NOMBRE_PRODUCTO);
+
+
       return;
   
     }
