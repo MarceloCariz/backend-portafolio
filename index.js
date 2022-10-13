@@ -132,7 +132,7 @@ io.on('connection', async(socket)=>{
       const elegidosPorIdCompra = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE})=>(REFERENCIA_COMPRA === idCompra && NOMBRE === NOMBRE_PRODUCTO));
       const idCompravacio =postulaciones.filter(({REFERENCIA_COMPRA})=>(REFERENCIA_COMPRA === idCompra ))
       // console.log(elegidosPorIdCompra.sort((a,b)=>(a.PRECIO_EXP - b.PRECIO_EXP)));
-      if(idCompravacio.length <= 0){
+      if(elegidosPorIdCompra.length <= 0){
         await conexion.execute(`UPDATE ORD_COMPRA SET ACTIVO = 'false' WHERE REFERENCIA_COMPRA = ${idCompra}`);
         await conexion.commit();
         return;
