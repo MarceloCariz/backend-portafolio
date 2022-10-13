@@ -147,7 +147,7 @@ io.on('connection', async(socket)=>{
 
       socket.emit('client-subasta',ordenarMinprecio[0]);
 
-      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA})=>(REFERENCIA_COMPRA !== idCompra && NOMBRE !== NOMBRE_PRODUCTO ));
+      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE})=>(REFERENCIA_COMPRA !== idCompra && NOMBRE !== NOMBRE_PRODUCTO ));
       return;
   
     }
