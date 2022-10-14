@@ -25,7 +25,16 @@ const registrarTransportista = async(req,resp)=>{
             return hash
         });
         body.correo = body.correo.toLowerCase();
-        const resultado = await conexion.execute( `call REGISTRARTRANSPORTISTA('${body.nombre}','${passwordHash}','${body.correo}')`); 
+        const id_contrato = Math.floor(Math.random() * 1000000);
+        const fecha = new Date(Date.now());
+        const fechaInicio = (new Date(fecha).toISOString());
+        const setMonth = fecha.setMonth(fecha.getMonth() + 1);
+        // const setMinuto = fecha.setMinutes(fecha.getMinutes() + 1);
+
+        const fechaTermino = (new Date(setMonth).toISOString());
+        const resultado = await conexion.execute( `call REGISTRARTRANSPORTISTA('${body.nombre}','${passwordHash}','${body.correo}', ${id_contrato})`); 
+        await conexion.commit();
+        const contrato = await conexion.execute(`call REGISTRARCONTRATO(${id_contrato},'${fechaInicio}', '${fechaTermino}')`)
         await conexion.commit();
         resp.json({msg: "insertado correctamente"})
     } catch (error) {
@@ -36,7 +45,7 @@ const registrarTransportista = async(req,resp)=>{
 }
 const obtenerTransportista= async( req, resp) =>{
     try {
-        const sql = "SELECT ID, NOMBRE,CORREO  FROM transportista";
+        const sql = "SELECT ID, NOMBRE,CORREO , PRECIO  FROM transportista";
         const resultado =  await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // const rs= await resultado.resultSet.getRow()
         // // console.log(await rs.NOMBRE)
@@ -116,6 +125,29 @@ const confirmarPedidoenviado = async(req,resp) =>{
     }
 }
 
+const obtenerContrato = async(req, resp)=>{
+    try {
+        const {ID} = req.usuario;
+        const sql = `select C.ID_CONTRATO, C.FECHA_INICIO, C.FECHA_TERMINO, C.SUELDO, C.ESTADO, C.RENOVACION from contrato C JOIN TRANSPORTISTA P ON P.ID_CONTRATO = C.ID_CONTRATO WHERE P.ID = ${ID}`
+        const consulta = await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        const contrato = consulta.rows[0];
+        resp.json(contrato);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const solicitudRenovacionContrato = async(req, resp) =>{
+    try {
+        const {id_contrato} = req.params;
+        await conexion.execute(`call SOLICITUD_CONTRATO(${id_contrato})`);
+        await conexion.commit();
+        resp.json('Solicitado con exito');
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 export {
     registrarTransportista,
@@ -126,4 +158,6 @@ export {
     obtenerPerfil,
     obtenerEnvios,
     confirmarPedidoenviado,
+    obtenerContrato,
+    solicitudRenovacionContrato
 }
