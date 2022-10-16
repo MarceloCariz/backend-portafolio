@@ -144,7 +144,7 @@ io.on('connection', async(socket)=>{
       await conexion.execute(`call ANADIRPRODUCTOEXT(${idCompra},${ID_PRODUCTOR},${ID_PRODUCTO},'${NOMBRE}')`);
       await conexion.commit();
 
-      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE, idSubasta})=>(idSubasta !== idSubastaC ));
+      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE, idSubasta, ID_PRODUCTOR})=>(idSubasta !== idSubastaC && ID_PRODUCTOR !== id  ));
 
       // if(ordenarMinprecio[0].idSubasta !== idSubasta || ID_PRODUCTOR !== id ) return;
       const mensaje = 'Tu ganaste la subasta!'
