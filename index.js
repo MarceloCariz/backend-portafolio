@@ -148,7 +148,7 @@ io.on('connection', async(socket)=>{
       if(ID_PRODUCTOR === id){
         socket.emit('client-subasta',mensaje, ID_PRODUCTOR, idCompra, NOMBRE_PRODUCTO,idSubasta);
       }
-      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE, idSubasta, ID_PRODUCTOR})=>(idSubasta !== idSubastaC   ));
+      postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE, idSubasta:idP, ID_PRODUCTOR})=>(idP !== idSubasta  ));
 
       // if(ordenarMinprecio[0].idSubasta !== idSubasta || ID_PRODUCTOR !== id ) return;
  
