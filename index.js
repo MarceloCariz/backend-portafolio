@@ -145,7 +145,9 @@ io.on('connection', async(socket)=>{
       await conexion.commit();
       const mensaje = 'Tu ganaste la subasta!'
       // socket.emit('transportista-mensaje');
-      socket.emit('client-subasta',mensaje, ID_PRODUCTOR, idCompra, NOMBRE_PRODUCTO,idSubasta);
+      if(ID_PRODUCTOR === id){
+        socket.emit('client-subasta',mensaje, ID_PRODUCTOR, idCompra, NOMBRE_PRODUCTO,idSubasta);
+      }
       postulaciones = postulaciones.filter(({REFERENCIA_COMPRA, NOMBRE, idSubasta, ID_PRODUCTOR})=>(idSubasta !== idSubastaC   ));
 
       // if(ordenarMinprecio[0].idSubasta !== idSubasta || ID_PRODUCTOR !== id ) return;
