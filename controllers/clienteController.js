@@ -167,7 +167,10 @@ const crearPedidoLocal = async(req, resp) =>{
 const obtenerPedidos = async(req, resp) =>{
     const {ID} = req.usuario;
     try {
-        const respuesta  = await conexion.execute(`select * from ord_compra where id_cliente = ${ID} order by fecha_compra desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const respuesta  = await conexion.execute(`select o.*, t.precio precioT from ord_compra o left join transportista t on o.id_transportista = t.id where id_cliente = ${ID} order by fecha_compra desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        // select o.*, t.precio from ord_compra o join transportista t on o.id_transportista = t.id where id_cliente = ${ID} order by o.fecha_compra desc;
+        // select * from ord_compra where id_cliente = 142 order by fecha_compra desc;
+
         resp.json(respuesta.rows)
     } catch (error) {
         console.log(error)
