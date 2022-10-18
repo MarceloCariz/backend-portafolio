@@ -157,6 +157,20 @@ const renovacionContrato = async(req, resp) =>{
     }
 }
 
+// GRAFICOS
+
+const datosGraficos = async(req, resp) =>{
+    const obj ={ outFormat: oracledb.OUT_FORMAT_OBJECT};
+    try {
+        const tipoVenta = await conexion.execute('SELECT DISTINCT tipo_venta, COUNT(*) cantidad FROM ord_compra GROUP BY tipo_venta',{},obj);
+        const estadoPago = await conexion.execute('SELECT DISTINCT estado_pago, COUNT(*) cantidad FROM ord_compra GROUP BY estado_pago',{},obj);
+        const clienteMayorVentas = await conexion.execute(`select count(o.referencia_compra) cantidad, o.referencia_compra, c.nombre from ord_compra o join cliente c on c.id = o.id_cliente 
+        where o.estado_pago = 'PAGADO' group by o.referencia_compra ,c.nombre order by cantidad desc fetch first 1 row only `,{},obj);
+        resp.json({tipoVenta: tipoVenta.rows, estadoPago: estadoPago.rows, clienteMayorVentas: clienteMayorVentas.rows});
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 export {
     registrarAdministrador,
@@ -174,5 +188,8 @@ export {
     actualizarTransportista,
     activarSubastaTransportista,
 
-    renovacionContrato
+    renovacionContrato,
+
+    //GRAFICOS
+    datosGraficos
 }
