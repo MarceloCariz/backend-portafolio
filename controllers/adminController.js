@@ -166,7 +166,16 @@ const datosGraficos = async(req, resp) =>{
         const estadoPago = await conexion.execute('SELECT DISTINCT estado_pago, COUNT(*) cantidad FROM ord_compra GROUP BY estado_pago',{},obj);
         const clienteMayorVentas = await conexion.execute(`select count(o.referencia_compra) cantidad, o.referencia_compra, c.nombre from ord_compra o join cliente c on c.id = o.id_cliente 
         where o.estado_pago = 'PAGADO' group by o.referencia_compra ,c.nombre order by cantidad desc fetch first 1 row only `,{},obj);
-        resp.json({tipoVenta: tipoVenta.rows, estadoPago: estadoPago.rows, clienteMayorVentas: clienteMayorVentas.rows});
+        const topCincoProductos = await conexion.execute(`select count(o.id_producto) cantidad,  p.nombre from ord_compra o join producto p on p.id_producto = o.id_producto 
+        where o.estado_pago = 'PAGADO'
+        group by p.nombre
+        order by cantidad desc fetch first 5 row only`,{},obj);
+        const stockProductosNombre  = await conexion.execute(`select sum(cantidad) total, nombre from producto group by nombre`,{},obj);
+
+        resp.json(
+            {tipoVenta: tipoVenta.rows, estadoPago: estadoPago.rows, 
+            clienteMayorVentas: clienteMayorVentas.rows, topCincoProductos: topCincoProductos.rows,  
+            stockProductosNombre : stockProductosNombre.rows   });
     } catch (error) {
         console.log(error);
     }
