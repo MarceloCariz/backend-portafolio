@@ -171,11 +171,16 @@ const datosGraficos = async(req, resp) =>{
         group by p.nombre
         order by cantidad desc fetch first 5 row only`,{},obj);
         const stockProductosNombre  = await conexion.execute(`select sum(cantidad) total, nombre from producto group by nombre`,{},obj);
+        const comprasPorMes = await conexion.execute(`select to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Month') as mes, count(fecha_compra)as total_compras  from ORD_COMPRA where estado_pago != 'RECHAZADO'
+        group by to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Month') `,{},obj);
+        const comprasPorDia = await conexion.execute(`select to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Day') as dia, count(fecha_compra)as total_compras  from ORD_COMPRA where estado_pago != 'RECHAZADO'
+        group by to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Day') order by total_compras desc`,{},obj);
 
         resp.json(
             {tipoVenta: tipoVenta.rows, estadoPago: estadoPago.rows, 
             clienteMayorVentas: clienteMayorVentas.rows, topCincoProductos: topCincoProductos.rows,  
-            stockProductosNombre : stockProductosNombre.rows   });
+            stockProductosNombre : stockProductosNombre.rows , comprasPorMes: comprasPorMes.rows,
+            comprasPorDia: comprasPorDia.rows});
     } catch (error) {
         console.log(error);
     }
