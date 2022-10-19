@@ -43,6 +43,8 @@ const activarSubasta = async(req, resp ) =>{
         resp.json({msg: "activado correctamente"})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 // ACTIVARORD_TRANSPORTISTA
@@ -54,6 +56,8 @@ const activarSubastaTransportista = async(req, resp ) =>{
         resp.json({msg: "activado correctamente"})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -68,6 +72,8 @@ const eliminarProductor = async(req, resp) =>{
         resp.json({msg: 'Eliminado Correctamente'})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -81,6 +87,8 @@ const actualizarProductor = async(req, resp) =>{
         resp.json({msg: 'Actualizado Correctamente'})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -94,6 +102,8 @@ const eliminarCliente= async(req, resp) =>{
         resp.json({msg: 'Eliminado Correctamente'})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 const actualizarCliente = async(req, resp) =>{
@@ -106,6 +116,8 @@ const actualizarCliente = async(req, resp) =>{
         resp.json({msg: 'Actualizado Correctamente'})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -133,9 +145,33 @@ const actualizarTransportista = async(req, resp) =>{
         resp.json({msg: 'Actualizado Correctamente'})
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'})
     }
 }
+///  CONSULTOR
+const registrarConsultor = async(req, resp)=>{
+    try {
+        const {id, nombre, password, correo} = req.body;
+        const validarUsuario = await conexion.execute( `select correo from consultor where correo = '${correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        // // console.log(resultado)
+        if(validarUsuario.rows.length === 1){
+            const error = new Error("Usuario ya registrado");
+            return resp.status(400).json({ msg: error.message });
+        }
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash =  await bcrypt.hash(password, salt).then(function(hash) {
+            return hash
+        });
+        const correoLowerCase = correo.toLowerCase();
+        await conexion.execute(`CALL REGISTRAR_CONSULTOR(${id},'${nombre}', '${passwordHash}', '${correoLowerCase}' )`)
+        await conexion.commit();
+        resp.json({msg: "insertado correctamente"})
+    } catch (error) {
+        console.log(error);
+        resp.json({msg: 'hubo un error'});
 
+    }
+}
 const obtenerOrdenesCompra = async(req, resp) =>{
     try {
         const ordCompra = await conexion.execute(`select * from ord_compra`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
@@ -143,6 +179,8 @@ const obtenerOrdenesCompra = async(req, resp) =>{
         resp.json(ordCompra.rows);
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -154,6 +192,8 @@ const renovacionContrato = async(req, resp) =>{
         resp.json('renovacion exitosa');
     } catch (error) {
         console.log(error)
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -183,6 +223,8 @@ const datosGraficos = async(req, resp) =>{
             comprasPorDia: comprasPorDia.rows});
     } catch (error) {
         console.log(error);
+        resp.json({msg: 'hubo un error'});
+
     }
 }
 
@@ -201,6 +243,8 @@ export {
     eliminarTransportista,
     actualizarTransportista,
     activarSubastaTransportista,
+
+    registrarConsultor,
 
     renovacionContrato,
 
