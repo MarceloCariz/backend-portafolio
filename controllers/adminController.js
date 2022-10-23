@@ -197,6 +197,15 @@ const renovacionContrato = async(req, resp) =>{
     }
 }
 
+const obtenerContratos = async(req,resp) =>{
+    try {
+        const contratos = await conexion.execute('select * from contrato',{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(contratos.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // GRAFICOS
 
 const datosGraficos = async(req, resp) =>{
@@ -228,6 +237,8 @@ const datosGraficos = async(req, resp) =>{
     }
 }
 
+
+
 export {
     registrarAdministrador,
     activarSubasta,
@@ -247,6 +258,7 @@ export {
     registrarConsultor,
 
     renovacionContrato,
+    obtenerContratos,
 
     //GRAFICOS
     datosGraficos

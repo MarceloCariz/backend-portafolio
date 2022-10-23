@@ -1,5 +1,5 @@
 import express from 'express';
-import { activarSubasta, activarSubastaTransportista, actualizarCliente, actualizarProductor, actualizarTransportista, datosGraficos, eliminarCliente, eliminarProductor, eliminarTransportista, obtenerOrdenesCompra, registrarAdministrador, registrarConsultor, renovacionContrato } from '../controllers/adminController.js';
+import { activarSubasta, activarSubastaTransportista, actualizarCliente, actualizarProductor, actualizarTransportista, datosGraficos, eliminarCliente, eliminarProductor, eliminarTransportista, obtenerContratos, obtenerOrdenesCompra, registrarAdministrador, registrarConsultor, renovacionContrato } from '../controllers/adminController.js';
 
 
 const router = express.Router();
@@ -23,6 +23,7 @@ router.delete('/transportista/eliminar/:id', eliminarTransportista);
 router.put('/subasta/transportista/activar', activarSubastaTransportista);
 
 // contrato
+router.get('/contratos', obtenerContratos);
 router.put('/productor/contrato/renovacion', renovacionContrato);
 
 //GRAFICOS
