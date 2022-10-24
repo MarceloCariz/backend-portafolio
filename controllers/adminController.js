@@ -222,8 +222,8 @@ const datosGraficos = async(req, resp) =>{
         const stockProductosNombre  = await conexion.execute(`select sum(cantidad) total, nombre from producto group by nombre`,{},obj);
         const comprasPorMes = await conexion.execute(`select to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Month','nls_date_language=spanish') as mes, count(fecha_compra)as total_compras  from ORD_COMPRA where estado_pago != 'RECHAZADO'
         group by to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Month','nls_date_language=spanish') `,{},obj);
-        const comprasPorDia = await conexion.execute(`select to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Day') as dia, count(fecha_compra)as total_compras  from ORD_COMPRA where estado_pago != 'RECHAZADO'
-        group by to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Day') order by total_compras desc`,{},obj);
+        const comprasPorDia = await conexion.execute(`select to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Day','nls_date_language=spanish') as dia, count(fecha_compra)as total_compras  from ORD_COMPRA where estado_pago != 'RECHAZADO'
+        group by to_char(to_date(fecha_compra, 'DD-MM-YYYY'), 'Day' ,'nls_date_language=spanish') order by total_compras desc`,{},obj);
 
         resp.json(
             {tipoVenta: tipoVenta.rows, estadoPago: estadoPago.rows, 
