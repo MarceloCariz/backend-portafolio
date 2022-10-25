@@ -212,7 +212,7 @@ const datosGraficos = async(req, resp) =>{
     const obj ={ outFormat: oracledb.OUT_FORMAT_OBJECT};
     try {
         const tipoVenta = await conexion.execute('SELECT DISTINCT tipo_venta, COUNT(*) cantidad FROM ord_compra GROUP BY tipo_venta',{},obj);
-        const estadoPago = await conexion.execute('SELECT DISTINCT estado_pago, COUNT(*) cantidad FROM ord_compra GROUP BY estado_pago',{},obj);
+        const estadoPago = await conexion.execute('SELECT DISTINCT estado_pago, COUNT(*) cantidad FROM ord_compra GROUP BY estado_pago ORDER BY UPPER (ESTADO_PAGO) ',{},obj);
         const clienteMayorVentas = await conexion.execute(`select count(o.referencia_compra) cantidad, o.referencia_compra, c.nombre from ord_compra o join cliente c on c.id = o.id_cliente 
         where o.estado_pago = 'PAGADO' group by o.referencia_compra ,c.nombre order by cantidad desc fetch first 1 row only `,{},obj);
         const topCincoProductos = await conexion.execute(`select count(o.id_producto) cantidad,  p.nombre from ord_compra o join producto p on p.id_producto = o.id_producto 
