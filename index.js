@@ -51,7 +51,7 @@ const conexion = await conectarDB();
 
 
 // CORREO SCHEDULE JOBS
-cron.schedule('19 18 * * *',async()=>{
+cron.schedule('25 18 * * *',async()=>{
 
   const fechaActual = new Date(Date.now());
   const contratosP = await conexion.execute("select P.NOMBRE, P.CORREO, C.ID_CONTRATO, C.FECHA_TERMINO from contrato C JOIN PRODUCTOR P ON P.ID_CONTRATO = C.ID_CONTRATO",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
