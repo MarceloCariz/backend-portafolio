@@ -1,6 +1,5 @@
 import oracledb from "oracledb"
-import pkg
- from 'transbank-sdk';
+import pkg from 'transbank-sdk';
 import conectarDB from '../config/index.js';
 
 const {WebpayPlus ,Options, IntegrationApiKeys, Environment, IntegrationCommerceCodes } = pkg;

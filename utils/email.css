@@ -1,0 +1,14 @@
+
+
+.centrar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    margin: 3rem;
+}
+
+
+.centrar img{
+    width: 80%;
+}

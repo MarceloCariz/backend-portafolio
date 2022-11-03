@@ -45,24 +45,30 @@ app.use('/api/productores', productorRoutes);
 app.use('/api/transportista',transportistaRoutes);
 app.use('/api/subasta',subastasRoutes);
 app.use('/api/admin', administradorRoutes);
-app.use('/api/transbank', trankbankRoutes);
+app.use('/api/transbank', trankbankRoutes); 
 
 const conexion = await conectarDB();
 
 
 // CORREO SCHEDULE JOBS
-cron.schedule(' 15 09 * * *',async()=>{
+cron.schedule('19 18 * * *',async()=>{
 
-  const fechaActual = new Date();
-  const fechaT = await conexion.execute("SELECT FECHA_TERMINO ,ID_CONTRATO FROM  CONTRATO ",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-  for(const f in fechaT.rows){
-    const {FECHA_TERMINO ,ID_CONTRATO} = fechaT.rows[f];
+  const fechaActual = new Date(Date.now());
+  const contratosP = await conexion.execute("select P.NOMBRE, P.CORREO, C.ID_CONTRATO, C.FECHA_TERMINO from contrato C JOIN PRODUCTOR P ON P.ID_CONTRATO = C.ID_CONTRATO",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+  const contratosT = await conexion.execute("select T.NOMBRE, T.CORREO, C.ID_CONTRATO, C.FECHA_TERMINO from contrato C JOIN TRANSPORTISTA T ON T.ID_CONTRATO = C.ID_CONTRATO",{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+
+  const contratos = contratosP.rows.concat(contratosT.rows);
+  // console.log(contratos)
+  for(const c in contratos){
+    const {FECHA_TERMINO ,ID_CONTRATO, CORREO, NOMBRE} = contratos[c];
     const isNegative = new Date(FECHA_TERMINO).getTime() - fechaActual.getTime() ;
+    // console.log(isNegative);
     if(isNegative < 0){
-      const consultaCorreo = await conexion.execute(`SELECT P.CORREO, P.NOMBRE  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
-      const {CORREO, NOMBRE } = consultaCorreo.rows[0];
+      // const consultaCorreo = await conexion.execute(`SELECT P.CORREO, P.NOMBRE  FROM PRODUCTOR P JOIN CONTRATO C ON P.ID_CONTRATO = C.ID_CONTRATO WHERE C.ID_CONTRATO = ${ID_CONTRATO} `,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+      // const {CORREO, NOMBRE } = consultaCorreo.rows[0];
+      console.log(CORREO);
       // const correo = consultaCorreo.rows[0].CORREO;
-      const cambiarEstado = await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
+      await conexion.execute(`call CAMBIOESTADOCONTRATO(${ID_CONTRATO})`);
       await conexion.commit();
       // console.log(correo);
       correoContrato(CORREO, NOMBRE);
