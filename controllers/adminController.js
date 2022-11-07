@@ -238,6 +238,39 @@ const datosGraficos = async(req, resp) =>{
 }
 
 
+const generarRepote = async(req, resp) =>{
+    const {tipoCliente,clienteTop,usuario ,comprasMes, estadoPagos, cantidadProductos, comprasDias,topCincoProductos} = req.body;
+    const nombreCliente = JSON.parse(clienteTop);
+    const fechaReporte = new Date().toLocaleDateString();
+    let texto = ``;
+    texto += `Cliente con la mayor compra: ${nombreCliente[0].NOMBRE} \n`;
+    try {
+        const tipoClienteData = JSON.parse(tipoCliente).map(({CANTIDAD, TIPO_VENTA})=>( texto += `Tipo de venta:  ${TIPO_VENTA}: ${CANTIDAD} \n`)); /// LOCAL , EXTERNO
+        const estadoPagosData = JSON.parse(estadoPagos).map(({CANTIDAD,ESTADO_PAGO})=>(texto += `Tipo de Pago: ${ESTADO_PAGO}: ${CANTIDAD} \n`)); ///PAGADO, PENDIENTE
+        const cantidadProductosData = JSON.parse(cantidadProductos).map(({NOMBRE, TOTAL})=>(texto += `Cantidad de productos: ${NOMBRE}: ${TOTAL} \n`))
+        const topCincoProductosData = JSON.parse(topCincoProductos).map(({NOMBRE, CANTIDAD},i)=>(texto += `${i +1}. Top productos mas vendidos: ${NOMBRE}: ${CANTIDAD} \n`));
+        // console.log(tipoClienteData);
+        // console.log(JSON.stringify("descripcion": `"${texto}"`));
+        // console.log(JSON.parse(texto));
+
+
+        await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}')`);
+        await conexion.commit();
+        resp.json("creado correctamente");
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const listarReportes = async(req, resp) =>{
+    try {
+        const reportes = await conexion.execute("select * from reporte", {},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        resp.json(reportes.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 export {
     registrarAdministrador,
@@ -261,5 +294,7 @@ export {
     obtenerContratos,
 
     //GRAFICOS
-    datosGraficos
+    datosGraficos,
+    generarRepote,
+    listarReportes
 }
