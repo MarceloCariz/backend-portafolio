@@ -241,7 +241,7 @@ const datosGraficos = async(req, resp) =>{
 const generarRepote = async(req, resp) =>{
     const {tipoCliente,clienteTop,usuario ,comprasMes, estadoPagos, cantidadProductos, comprasDias,topCincoProductos} = req.body;
     const nombreCliente = JSON.parse(clienteTop);
-    const fechaReporte = new Date().toLocaleDateString();
+    const fechaReporte = new Date().toLocaleDateString('es-CL');
     let texto = ``;
     texto += `Cliente con la mayor compra: ${nombreCliente[0].NOMBRE} \n`;
     try {
