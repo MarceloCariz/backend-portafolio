@@ -147,12 +147,14 @@ const crearPedidoLocal = async(req, resp) =>{
         const fecha = body.fecha;
         const id_referencia = body.id_referencia;
         const id_transportista = body.id_transportista;
+        const precio_transporte = body.precio_transporte;
         // const id_referencia = body.id_referencia;
         // console.log(body)
         for(let  p  in productos){
             const {CANTIDAD, NOMBRE, unidad, ID_PRODUCTOR, ID:ID_PRODUCTO, PRECIO} = productos[p];
             // const productoFinal = { cantidad: unidad,nombre_producto: NOMBRE, peso: unidad, direccion, fecha_compra:fecha, id_referencia}
-            await conexion.execute(`CALL CREARORD_COMPRA_LOCAL(${ID_CLIENTE} , ${ID_PRODUCTOR},  ${ID_PRODUCTO}, ${PRECIO}  ,'${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, ${id_transportista})`);
+            await conexion.execute(`CALL CREARORD_COMPRA_LOCAL(${ID_CLIENTE} , ${ID_PRODUCTOR},  ${ID_PRODUCTO}, ${PRECIO}  ,'${unidad}','${unidad}' , '${TIPO_CLIENTE}' ,
+            '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, ${id_transportista},${precio_transporte})`);
             await conexion.commit();
         }
         resp.json('Correct')
@@ -167,7 +169,7 @@ const crearPedidoLocal = async(req, resp) =>{
 const obtenerPedidos = async(req, resp) =>{
     const {ID} = req.usuario;
     try {
-        const respuesta  = await conexion.execute(`select o.*, t.precio precioT from ord_compra o left join transportista t on o.id_transportista = t.id where id_cliente = ${ID} order by fecha_compra desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        const respuesta  = await conexion.execute(`select o.*, o.precio_transporte precioT from ord_compra o left join transportista t on o.id_transportista = t.id where id_cliente = ${ID} order by fecha_compra desc`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // select o.*, t.precio from ord_compra o join transportista t on o.id_transportista = t.id where id_cliente = ${ID} order by o.fecha_compra desc;
         // select * from ord_compra where id_cliente = 142 order by fecha_compra desc;
 

@@ -151,9 +151,9 @@ const obtenerEnviosCompletados = async(req,resp) =>{
     try {
         const {ID} = req.usuario;
         const resultado = await conexion.execute(
-            `select o.fecha_compra, o.referencia_compra, t.precio as precioT  from ord_compra o join transportista t on 
+            `select o.fecha_compra, o.referencia_compra, o.precio_transporte as precioT  from ord_compra o join transportista t on 
             t.id = o.id_transportista
-            where o.id_transportista = ${ID} and ESTADO_ENVIO = 'recibido' group by  o.fecha_compra, o.referencia_compra, t.precio order by o.fecha_compra desc`,
+            where o.id_transportista = ${ID} and ESTADO_ENVIO = 'recibido' group by  o.fecha_compra, o.referencia_compra,o.precio_transporte order by o.fecha_compra desc`,
             {},{outFormat: oracledb.OUT_FORMAT_OBJECT})
         resp.json(resultado.rows);
     } catch (error) {
