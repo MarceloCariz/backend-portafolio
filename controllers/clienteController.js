@@ -25,7 +25,8 @@ const obtenerClientes = async( req, resp) =>{
 const regitrarCliente = async(req,resp)=>{
     try {
         const body = req.body;
-        console.log(body)
+        // console.log(body)
+        // return;
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         body.correo = body.correo.toLowerCase();
         const validarUsuario = await conexion.execute( `select correo from cliente where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});

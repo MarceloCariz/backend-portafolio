@@ -240,23 +240,76 @@ const datosGraficos = async(req, resp) =>{
 
 const generarRepote = async(req, resp) =>{
     const {fechaReporte, tipoCliente,clienteTop,usuario ,comprasMes, estadoPagos, cantidadProductos, comprasDias,topCincoProductos} = req.body;
-    const nombreCliente = JSON.parse(clienteTop);
+
+
     // const fechaReporte = new Date().toLocaleDateString('es-CL');
     let texto = ``;
-    texto += `Cliente con la mayor compra: ${nombreCliente[0].NOMBRE} \n`;
     try {
-        const tipoClienteData = JSON.parse(tipoCliente).map(({CANTIDAD, TIPO_VENTA})=>( texto += `Tipo de venta:  ${TIPO_VENTA}: ${CANTIDAD} \n`)); /// LOCAL , EXTERNO
-        const estadoPagosData = JSON.parse(estadoPagos).map(({CANTIDAD,ESTADO_PAGO})=>(texto += `Tipo de Pago: ${ESTADO_PAGO}: ${CANTIDAD} \n`)); ///PAGADO, PENDIENTE
-        const cantidadProductosData = JSON.parse(cantidadProductos).map(({NOMBRE, TOTAL})=>(texto += `Cantidad de productos: ${NOMBRE}: ${TOTAL} \n`))
-        const topCincoProductosData = JSON.parse(topCincoProductos).map(({NOMBRE, CANTIDAD},i)=>(texto += `${i +1}. Top productos mas vendidos: ${NOMBRE}: ${CANTIDAD} \n`));
+
+        if(tipoCliente !== 'undefined' && estadoPagos !=='undefined' && cantidadProductos !=='undefined' && topCincoProductos !=='undefined' && comprasMes  !== 'undefined' && comprasDias  !== 'undefined'){
+            const nombreCliente = JSON.parse(clienteTop);
+            texto += `Cliente con la mayor compra: ${nombreCliente[0].NOMBRE} \n`;
+            JSON.parse(tipoCliente).map(({CANTIDAD, TIPO_VENTA})=>( texto += `Tipo de venta:  ${TIPO_VENTA}: ${CANTIDAD} \n`)); /// LOCAL , EXTERNO
+            JSON.parse(estadoPagos).map(({CANTIDAD,ESTADO_PAGO})=>(texto += ESTADO_PAGO ? `Tipo de Pago: ${ESTADO_PAGO}: ${CANTIDAD} \n` : ''));
+            JSON.parse(cantidadProductos).map(({NOMBRE, TOTAL})=>(texto += `Cantidad de productos: ${NOMBRE}: ${TOTAL} \n`));
+            JSON.parse(topCincoProductos).map(({NOMBRE, CANTIDAD},i)=>(texto += `${i +1}. Top productos mas vendidos: ${NOMBRE}: ${CANTIDAD} \n`));
+            JSON.parse(comprasDias).map(({DIA, TOTAL_COMPRAS},i)=>(texto += `${i +1}. Compras por dia: ${DIA}: ${TOTAL_COMPRAS} \n`));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'General')`);
+            await conexion.commit();
+            return resp.json("creado correctamente");
+        }
+        if(comprasMes  !== 'undefined'){
+            
+
+            JSON.parse(comprasMes).map(({MES, TOTAL_COMPRAS})=>( texto += `Venta por mes:  ${MES}: ${TOTAL_COMPRAS} \n`));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Ventas por Mes')`);
+            await conexion.commit();
+            return resp.json("creado correctamente"); /// LOCAL , EXTERNO
+        }
+        if( tipoCliente  !== 'undefined'){
+
+            JSON.parse(tipoCliente).map(({CANTIDAD, TIPO_VENTA})=>( texto += `Tipo de venta:  ${TIPO_VENTA}: ${CANTIDAD} \n`));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Tipo de Cliente')`);
+            await conexion.commit();
+            return resp.json("creado correctamente"); /// LOCAL , EXTERNO
+        }
+        if (estadoPagos  !== 'undefined'){
+
+            JSON.parse(estadoPagos).map(({CANTIDAD,ESTADO_PAGO})=>(texto +=  ESTADO_PAGO ? `Tipo de Pago: ${ESTADO_PAGO}: ${CANTIDAD} \n` : ''));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Estado de Pagos')`);
+            await conexion.commit();
+            return resp.json("creado correctamente");
+        }
+        if (cantidadProductos  !== 'undefined' ){
+
+            JSON.parse(cantidadProductos).map(({NOMBRE, TOTAL})=>(texto += `Cantidad de productos: ${NOMBRE}: ${TOTAL} \n`));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Cantidad de Productos')`);
+            await conexion.commit();
+            return resp.json("creado correctamente");
+        }
+        if (topCincoProductos  !== 'undefined'){
+
+            JSON.parse(topCincoProductos).map(({NOMBRE, CANTIDAD},i)=>(texto += `${i +1}. Top productos mas vendidos: ${NOMBRE}: ${CANTIDAD} \n`));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Top Cinco Productos')`);
+            await conexion.commit();
+            return resp.json("creado correctamente");
+        }
+        if (comprasDias  !== 'undefined'){
+
+            JSON.parse(comprasDias).map(({DIA, TOTAL_COMPRAS},i)=>(texto += `${i +1}. Compras por dia: ${DIA}: ${TOTAL_COMPRAS} \n`));
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Ventas por Dias')`);
+            await conexion.commit();
+            return resp.json("creado correctamente");
+        }
+        
+
+
+
         // console.log(tipoClienteData);
-        // console.log(JSON.stringify("descripcion": `"${texto}"`));
+
+        // console.log(JSON.stringify("descripcion": `"${texto}"`))
         // console.log(JSON.parse(texto));
 
-
-        await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}')`);
-        await conexion.commit();
-        resp.json("creado correctamente");
     } catch (error) {
         console.log(error)
     }
@@ -264,7 +317,7 @@ const generarRepote = async(req, resp) =>{
 
 const listarReportes = async(req, resp) =>{
     try {
-        const reportes = await conexion.execute("select * from reporte", {},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        const reportes = await conexion.execute("select * from reporte order by ID_REPORTE DESC", {},{outFormat: oracledb.OUT_FORMAT_OBJECT})
         resp.json(reportes.rows);
     } catch (error) {
         console.log(error)
