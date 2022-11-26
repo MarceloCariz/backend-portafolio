@@ -27,13 +27,30 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 dotenv.config();
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, "public/img"),
-    filename: (req, file, cb, filename) => {
-      cb(null, file.originalname);
-    },
-});
-app.use(multer({ storage: storage }).single("image"));
+// const storage = multer.diskStorage({
+//     destination: path.join(__dirname, "public/img"),
+//     filename: (req, file, cb, filename) => {
+//       cb(null, file.originalname);
+//     },
+// });
+// app.use(multer({ storage: storage }).single("image"));
+const assign = multer.diskStorage({
+  destination:function(req,file,cb){
+    const dirImage='./public/img/';
+    const dirPdf='./public/reportes/';
+
+    if(file.fieldname === 'image'){
+      cb(null,dirImage);
+      }else if(file.fieldname==='reporte'){
+      cb(null,dirPdf);
+      }
+  },
+  filename: (req, file, cb, filename) => {
+          cb(null, file.originalname);
+  },
+})
+app.use(multer({ storage: assign }).fields([{name: "image", maxCount: 1}, {name: "reporte", maxCount: 1}]));
+
 app.use(express.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname, "public")));
 // await conectarDB();

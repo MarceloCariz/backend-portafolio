@@ -14,14 +14,18 @@ router.get('/', obtenerProductores);
 // router.post('/login', autenticar);
 // router.get('/perfil',checkAuthProductor, perfil)
 router.get('/subastas', obtenerSubastasActivas);
-router.get('/productos',checkAuth, obtenerProductos )
+router.get('/productos',checkAuth, obtenerProductos );
 router.get('/envios',checkAuth, obtenerEnvios);
-router.get('/envios/completados',  checkAuth, obtenerEnviosCompletados)
+router.get('/envios/completados',  checkAuth, obtenerEnviosCompletados);
 router.get('/contrato', checkAuth, obtenerContrato);
-router.post('/productos/nuevo',checkAuth, nuevoProducto )
+
+
+router.post('/productos/nuevo',checkAuth, nuevoProducto );
 router.post('/nuevo', registrarProductor);
-router.delete('/productos/eliminar/:idp',checkAuth, eliminarProducto)
-router.put('/productos/editar',checkAuth, editarProducto)
+router.delete('/productos/eliminar/:idp',checkAuth, eliminarProducto);
+router.put('/productos/editar',checkAuth, editarProducto);
+
+
 router.put('/envios/bodega/confirmar', checkAuth, confirmarEnviobodega);
 router.put('/contrato/solicitud/:id_contrato', solicitudRenovacionContrato);
 

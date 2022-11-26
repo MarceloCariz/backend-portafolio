@@ -240,6 +240,7 @@ const datosGraficos = async(req, resp) =>{
 
 const generarRepote = async(req, resp) =>{
     const {fechaReporte, tipoCliente,clienteTop,usuario ,comprasMes, estadoPagos, cantidadProductos, comprasDias,topCincoProductos} = req.body;
+    const pdfPath =  process.env.HOST + '/reportes/' + req.files.reporte[0].filename;
 
 
     // const fechaReporte = new Date().toLocaleDateString('es-CL');
@@ -254,7 +255,7 @@ const generarRepote = async(req, resp) =>{
             JSON.parse(cantidadProductos).map(({NOMBRE, TOTAL})=>(texto += `Cantidad de productos: ${NOMBRE}: ${TOTAL} \n`));
             JSON.parse(topCincoProductos).map(({NOMBRE, CANTIDAD},i)=>(texto += `${i +1}. Top productos mas vendidos: ${NOMBRE}: ${CANTIDAD} \n`));
             JSON.parse(comprasDias).map(({DIA, TOTAL_COMPRAS},i)=>(texto += `${i +1}. Compras por dia: ${DIA}: ${TOTAL_COMPRAS} \n`));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'General')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'General', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente");
         }
@@ -262,42 +263,42 @@ const generarRepote = async(req, resp) =>{
             
 
             JSON.parse(comprasMes).map(({MES, TOTAL_COMPRAS})=>( texto += `Venta por mes:  ${MES}: ${TOTAL_COMPRAS} \n`));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Ventas por Mes')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Ventas por Mes', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente"); /// LOCAL , EXTERNO
         }
         if( tipoCliente  !== 'undefined'){
 
             JSON.parse(tipoCliente).map(({CANTIDAD, TIPO_VENTA})=>( texto += `Tipo de venta:  ${TIPO_VENTA}: ${CANTIDAD} \n`));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Tipo de Cliente')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Tipo de Cliente', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente"); /// LOCAL , EXTERNO
         }
         if (estadoPagos  !== 'undefined'){
 
             JSON.parse(estadoPagos).map(({CANTIDAD,ESTADO_PAGO})=>(texto +=  ESTADO_PAGO ? `Tipo de Pago: ${ESTADO_PAGO}: ${CANTIDAD} \n` : ''));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Estado de Pagos')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Estado de Pagos', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente");
         }
         if (cantidadProductos  !== 'undefined' ){
 
             JSON.parse(cantidadProductos).map(({NOMBRE, TOTAL})=>(texto += `Cantidad de productos: ${NOMBRE}: ${TOTAL} \n`));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Cantidad de Productos')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Cantidad de Productos', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente");
         }
         if (topCincoProductos  !== 'undefined'){
 
             JSON.parse(topCincoProductos).map(({NOMBRE, CANTIDAD},i)=>(texto += `${i +1}. Top productos mas vendidos: ${NOMBRE}: ${CANTIDAD} \n`));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Top Cinco Productos')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Top Cinco Productos', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente");
         }
         if (comprasDias  !== 'undefined'){
 
             JSON.parse(comprasDias).map(({DIA, TOTAL_COMPRAS},i)=>(texto += `${i +1}. Compras por dia: ${DIA}: ${TOTAL_COMPRAS} \n`));
-            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Ventas por Dias')`);
+            await conexion.execute(`CALL REGISTRAR_REPORTE('${texto}', '${fechaReporte}','${usuario}', 'Ventas por Dias', '${pdfPath}')`);
             await conexion.commit();
             return resp.json("creado correctamente");
         }

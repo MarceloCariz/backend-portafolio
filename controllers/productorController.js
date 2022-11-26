@@ -80,10 +80,11 @@ const obtenerProductos = async(req, resp)=>{
 
 const nuevoProducto = async(req, resp) =>{
     try {   
-        // console.log(req.usuario)
+        // console.log(req.files);
+        // return;
         const {ID} = req.usuario;
         const {nombre, cantidad, precio_local, precio_ext, calidad} = req.body;
-        const imagen = req.file.filename;
+        const imagen = req.files.image[0].filename;
         const nuevoProducto = await conexion.execute(`call REGISTRARPRODUCTO('${nombre}','${cantidad}', ${precio_local},${precio_ext},${ID},'${calidad}', '${process.env.HOST}/img/${imagen}' ) `);
         await conexion.commit();
         resp.json('anadido correctamente')
