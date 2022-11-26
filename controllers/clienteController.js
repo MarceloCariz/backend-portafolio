@@ -3,6 +3,7 @@ import conectarDB from "../config/index.js"
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import bcrypt from 'bcrypt'
+import { correoRecepcion } from "../utils/correoRecepcion.js";
 const conexion =  await conectarDB();
 const saltRounds = 10;
 
@@ -193,9 +194,11 @@ const obtenerBoleta = async(req, resp) => {
 
 const confirmarRecepcionPedidoLocal  = async(req, resp) =>{
     const {id:referencia_compra} = req.params;
+    const {correo, nombre} = req.body;
     try {
         await conexion.execute(`call RECEPCION_ENVIO_ACEPTADO_LOCAL(${referencia_compra})`);
         await conexion.commit();
+        await correoRecepcion(correo, nombre, referencia_compra);
         resp.json('Confirmación exitosa');
     } catch (error) {
         console.log(error)
