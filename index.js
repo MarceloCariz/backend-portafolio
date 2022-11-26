@@ -18,6 +18,8 @@ import http from 'http';
 import cron from 'node-cron';
 import { Server as SocketServer } from "socket.io";
 import { correoContrato } from "./utils/correoContrato.js";
+import { v4 as uuidv4 } from 'uuid';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,7 +48,12 @@ const assign = multer.diskStorage({
       }
   },
   filename: (req, file, cb, filename) => {
-          cb(null, file.originalname);
+          if(file.fieldname === "reporte"){
+            cb(null, uuidv4() + '.pdf');
+          }
+          if(file.fieldname === "image"){
+            cb(null, file.originalname);
+          }
   },
 })
 app.use(multer({ storage: assign }).fields([{name: "image", maxCount: 1}, {name: "reporte", maxCount: 1}]));

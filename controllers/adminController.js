@@ -240,12 +240,13 @@ const datosGraficos = async(req, resp) =>{
 
 const generarRepote = async(req, resp) =>{
     const {fechaReporte, tipoCliente,clienteTop,usuario ,comprasMes, estadoPagos, cantidadProductos, comprasDias,topCincoProductos} = req.body;
-    const pdfPath =  process.env.HOST + '/reportes/' + req.files.reporte[0].filename;
+
 
 
     // const fechaReporte = new Date().toLocaleDateString('es-CL');
     let texto = ``;
     try {
+        const pdfPath =  process.env.HOST + '/reportes/' + req.files.reporte[0].filename;
 
         if(tipoCliente !== 'undefined' && estadoPagos !=='undefined' && cantidadProductos !=='undefined' && topCincoProductos !=='undefined' && comprasMes  !== 'undefined' && comprasDias  !== 'undefined'){
             const nombreCliente = JSON.parse(clienteTop);

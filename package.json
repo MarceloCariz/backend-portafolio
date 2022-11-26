@@ -24,6 +24,7 @@
     "nodemon": "^2.0.19",
     "oracledb": "^5.4.0",
     "socket.io": "^4.5.1",
-    "transbank-sdk": "^4.0.0"
+    "transbank-sdk": "^4.0.0",
+    "uuid": "^9.0.0"
   }
 }
