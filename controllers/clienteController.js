@@ -194,11 +194,14 @@ const obtenerBoleta = async(req, resp) => {
 
 const confirmarRecepcionPedidoLocal  = async(req, resp) =>{
     const {id:referencia_compra} = req.params;
-    const {correo, nombre} = req.body;
+    const {correo , nombre} = req.body;
+    const sql =`select ID,NOMBRE_PRODUCTO, PRECIO, CANTIDAD , FECHA_COMPRA from ord_compra where referencia_compra = ${referencia_compra}`;
     try {
+        const consultaProductos = await conexion.execute(sql,{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        const productos = consultaProductos.rows;
+        await correoRecepcion(correo, nombre, referencia_compra, productos);
         await conexion.execute(`call RECEPCION_ENVIO_ACEPTADO_LOCAL(${referencia_compra})`);
         await conexion.commit();
-        await correoRecepcion(correo, nombre, referencia_compra);
         resp.json('Confirmación exitosa');
     } catch (error) {
         console.log(error)
