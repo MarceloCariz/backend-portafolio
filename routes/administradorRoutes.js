@@ -1,5 +1,5 @@
 import express from 'express';
-import { activarSubasta, activarSubastaTransportista, actualizarCliente, actualizarProductor, actualizarTransportista, datosGraficos, eliminarCliente, eliminarProductor, eliminarTransportista, generarRepote, listarReportes, obtenerContratos, obtenerOrdenesCompra, registrarAdministrador, registrarConsultor, renovacionContrato } from '../controllers/adminController.js';
+import { activarSubasta, activarSubastaTransportista, actualizarCliente, actualizarProductor, actualizarTransportista, agregarNombreProducto, datosGraficos, editarNombreProducto, eliminarCliente, eliminarNombreProducto, eliminarProductoProductor, eliminarProductor, eliminarTransportista, generarRepote, listarReportes, obtenerContratos, obtenerOrdenesCompra, registrarAdministrador, registrarConsultor, renovacionContrato } from '../controllers/adminController.js';
 
 
 const router = express.Router();
@@ -31,4 +31,10 @@ router.get('/envios/graficos/datos', datosGraficos);
 //REPORTES
 router.post('/envios/reporte', generarRepote);
 router.get('/envios/reporte/listar', listarReportes);
+// NOMBRE PRODUCTO
+router.post('/producto/nuevo',agregarNombreProducto);
+router.delete('/producto/nombre/eliminar/:id', eliminarNombreProducto);
+router.put('/producto/nombre/editar', editarNombreProducto);
+
+router.delete('/producto/productor/eliminar/:id', eliminarProductoProductor);
 export default router

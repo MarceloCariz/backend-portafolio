@@ -326,6 +326,61 @@ const listarReportes = async(req, resp) =>{
     }
 }
 
+const agregarNombreProducto = async(req, resp) =>{
+    try {
+        const {nombre} = req.body;
+        const nombres = await conexion.execute('select NOMBRE from producto_admin',{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        const existe = nombres.rows.some(({NOMBRE})=>(NOMBRE === nombre.toLowerCase()));
+        if(existe){
+            return resp.json("Este nombre ya esta registrado")
+        }
+        await conexion.execute(`call REGISTRARPRODUCTOADMIN('${nombre.toLowerCase()}')`);
+        await conexion.commit();
+        resp.json("Agregado correctamente")
+    } catch (error) {
+        console.log(error);
+        resp.json("Hubo un error")
+    }
+}
+
+const eliminarNombreProducto = async(req,resp) => {
+    try {
+        const {id} = req.params;
+        await conexion.execute(`call ELIMINARPRODUCTOADMIN(${id})`);
+        await conexion.commit();
+        resp.json("Eliminado correctamente")
+    } catch (error) {
+        console.log(error);
+        resp.json("Hubo un error")
+    }
+}
+
+const editarNombreProducto = async(req,resp) => {
+    try {
+        const {id, nombre} = req.body;
+        await conexion.execute(`call EDITARPRODUCTOADMIN(${id}, '${nombre}')`);
+        await conexion.commit();
+        resp.json("Editado correctamente")
+    } catch (error) {
+        console.log(error);
+        resp.json("Hubo un error")
+    }
+}
+
+
+
+
+const eliminarProductoProductor = async(req, resp) =>{
+    try {
+        const { id } = req.params;
+        await conexion.execute(`call ELIMINAR_PRODUCTO_PRODUCTOR_ADMIN(${id})`);
+        await conexion.commit();
+        resp.json("Eliminado correctamente")
+    } catch (error) {
+        console.log(error);
+        resp.json("Hubo un error")
+    }
+}
 
 export {
     registrarAdministrador,
@@ -351,5 +406,11 @@ export {
     //GRAFICOS
     datosGraficos,
     generarRepote,
-    listarReportes
+    listarReportes,
+
+    agregarNombreProducto,
+    editarNombreProducto,
+    eliminarNombreProducto,
+
+    eliminarProductoProductor
 }
