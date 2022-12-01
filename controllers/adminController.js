@@ -326,15 +326,27 @@ const listarReportes = async(req, resp) =>{
     }
 }
 
-const agregarNombreProducto = async(req, resp) =>{
+
+const listarNombresProducto = async(req, resp) => {
     try {
-        const {nombre} = req.body;
+        const nombresProductos = await conexion.execute('select * from producto_admin',{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
+        resp.json(nombresProductos.rows);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const agregarNombreProducto = async(req, resp) =>{
+    const {nombre} = req.body;
+
+    const nombreLower = nombre.toLowerCase();
+    try {
         const nombres = await conexion.execute('select NOMBRE from producto_admin',{},{outFormat: oracledb.OUT_FORMAT_OBJECT})
-        const existe = nombres.rows.some(({NOMBRE})=>(NOMBRE === nombre.toLowerCase()));
+        const existe = nombres.rows.some(({NOMBRE})=>(NOMBRE === nombreLower));
         if(existe){
             return resp.json("Este nombre ya esta registrado")
         }
-        await conexion.execute(`call REGISTRARPRODUCTOADMIN('${nombre.toLowerCase()}')`);
+        await conexion.execute(`call REGISTRARPRODUCTOADMIN('${nombreLower}')`);
         await conexion.commit();
         resp.json("Agregado correctamente")
     } catch (error) {
@@ -368,7 +380,15 @@ const editarNombreProducto = async(req,resp) => {
 }
 
 
-
+const listarProductosProductor = async(req, resp) => {
+    try {
+        const productos = await  conexion.execute('select * from producto',{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
+        resp.json(productos.rows);
+    } catch (error) {
+        console.log(error);
+        resp.json("Hubo un error")
+    }
+}
 
 const eliminarProductoProductor = async(req, resp) =>{
     try {
@@ -408,9 +428,11 @@ export {
     generarRepote,
     listarReportes,
 
+    listarNombresProducto,
     agregarNombreProducto,
     editarNombreProducto,
     eliminarNombreProducto,
 
+    listarProductosProductor,
     eliminarProductoProductor
 }
