@@ -3,6 +3,7 @@ import conectarDB from "../config/index.js"
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import bcrypt from 'bcrypt'
+import { correoPassword } from "../utils/correoPassword.js";
 const conexion =  await conectarDB();
 
 
@@ -11,7 +12,7 @@ const conexion =  await conectarDB();
 const registrarTransportista = async(req,resp)=>{
     try {
         const body = req.body;
-      
+        body.correo = body.correo.toLowerCase().trim();
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         const validarUsuario = await conexion.execute( `select correo from transportista where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // console.log(resultado)
@@ -24,7 +25,7 @@ const registrarTransportista = async(req,resp)=>{
         const passwordHash =  await bcrypt.hash(body.password, salt).then(function(hash) {
             return hash
         });
-        body.correo = body.correo.toLowerCase();
+        // body.correo = body.correo.toLowerCase();
         const id_contrato = Math.floor(Math.random() * 1000000);
         const fecha = new Date(Date.now());
         const fechaInicio = (new Date(fecha).toISOString());
@@ -36,7 +37,9 @@ const registrarTransportista = async(req,resp)=>{
         await conexion.commit();
         const contrato = await conexion.execute(`call REGISTRARCONTRATO(${id_contrato},'${fechaInicio}', '${fechaTermino}')`)
         await conexion.commit();
-        resp.json({msg: "insertado correctamente"})
+        resp.json({msg: "insertado correctamente"});
+        await correoPassword(body.correo, body.password, body.nombre, 'transportista');
+
     } catch (error) {
         console.log(error);
         resp.json({msg: "Hubo un error"})

@@ -3,6 +3,7 @@ import conectarDB from "../config/index.js"
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import bcrypt from 'bcrypt'
+import { correoPassword } from "../utils/correoPassword.js";
 const conexion =  await conectarDB();
 const saltRounds = 10;
 
@@ -23,6 +24,7 @@ const obtenerProductores = async( req, resp) =>{
 const registrarProductor = async(req,resp)=>{
     try {
         const body = req.body;
+        body.correo = body.correo.toLowerCase().trim();
 
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
         const validarUsuario = await conexion.execute( `select correo from productor where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
@@ -37,7 +39,6 @@ const registrarProductor = async(req,resp)=>{
             return hash
         });
 
-        body.correo = body.correo.toLowerCase();
         const id_contrato = Math.floor(Math.random() * 1000000);
 
         const fecha = new Date(Date.now());
@@ -51,8 +52,8 @@ const registrarProductor = async(req,resp)=>{
         await conexion.commit();
         const contrato = await conexion.execute(`call REGISTRARCONTRATO(${id_contrato},'${fechaInicio}', '${fechaTermino}')`)
         await conexion.commit();
-
-        resp.json({msg: "insertado correctamente"})
+        resp.json({msg: "Agregado correctamente"});
+        await correoPassword(body.correo, body.password, body.nombre, 'productor');
     } catch (error) {
         console.log(error);
         resp.json({msg: "Hubo un error"})

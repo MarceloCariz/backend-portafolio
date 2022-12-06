@@ -4,6 +4,7 @@ import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import bcrypt from 'bcrypt'
 import { correoRecepcion } from "../utils/correoRecepcion.js";
+import { correoPassword } from "../utils/correoPassword.js";
 const conexion =  await conectarDB();
 const saltRounds = 10;
 
@@ -29,7 +30,7 @@ const regitrarCliente = async(req,resp)=>{
         // console.log(body)
         // return;
         // const sql = "insert into clientes (nombre) values(':nombre')" ;
-        body.correo = body.correo.toLowerCase();
+        body.correo = body.correo.toLowerCase().trim();
         const validarUsuario = await conexion.execute( `select correo from cliente where correo = '${body.correo}'`,{},{outFormat: oracledb.OUT_FORMAT_OBJECT});
         // // console.log(resultado)
         if(validarUsuario.rows.length === 1){
@@ -43,6 +44,7 @@ const regitrarCliente = async(req,resp)=>{
         });
         const resultado = await conexion.execute( `CALL REGISTRARCLIENTE('${body.nombre}','${passwordHash}','${body.correo}', '${body.tipo}', '${body.rut}')`); 
         await conexion.commit();
+        await correoPassword(body.correo, body.password, body.nombre, 'cliente');
         resp.json({msg: "insertado correctamente"})
     } catch (error) {
         console.log(error);
