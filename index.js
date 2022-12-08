@@ -52,7 +52,7 @@ const assign = multer.diskStorage({
             cb(null, uuidv4() + '.pdf');
           }
           if(file.fieldname === "image"){
-            cb(null, file.originalname);
+            cb(null, uuidv4() + '.jpg');
           }
   },
 })
