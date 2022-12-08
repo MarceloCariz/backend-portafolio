@@ -123,12 +123,14 @@ const crearPedidoExt = async(req, resp) =>{
         const fecha = body.fecha;
         const id_referencia = body.id_referencia;
         const refigeracion =  body.refigeracion;
+        const pais = body.pais;
+        const ciudad = body.ciudad;
         // const id_referencia = body.id_referencia;
         // console.log(body)
         for(let  p  in productos){
             const {CANTIDAD, NOMBRE, unidad} = productos[p];
             // const productoFinal = { cantidad: unidad,nombre_producto: NOMBRE, peso: unidad, direccion, fecha_compra:fecha, id_referencia}
-            await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, '${refigeracion}')`);
+            await conexion.execute(`CALL CREARORD_COMPRA(${ID} ,   '${unidad}','${unidad}' , '${TIPO_CLIENTE}' , '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, '${refigeracion}', '${ciudad}', '${pais}')`);
             await conexion.commit();
         }
         resp.json('Correct')
@@ -148,6 +150,7 @@ const crearPedidoLocal = async(req, resp) =>{
         // await conexion.commit();
         const productos = JSON.parse(body.products);
         const direccion =  body.direccion;
+        const ciudad = body.ciudad;
         const fecha = body.fecha;
         const id_referencia = body.id_referencia;
         const id_transportista = body.id_transportista;
@@ -157,8 +160,8 @@ const crearPedidoLocal = async(req, resp) =>{
         for(let  p  in productos){
             const {CANTIDAD, NOMBRE, unidad, ID_PRODUCTOR, ID:ID_PRODUCTO, PRECIO} = productos[p];
             // const productoFinal = { cantidad: unidad,nombre_producto: NOMBRE, peso: unidad, direccion, fecha_compra:fecha, id_referencia}
-            await conexion.execute(`CALL CREARORD_COMPRA_LOCAL(${ID_CLIENTE} , ${ID_PRODUCTOR},  ${ID_PRODUCTO}, ${PRECIO}  ,'${unidad}','${unidad}' , '${TIPO_CLIENTE}' ,
-            '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, ${id_transportista},${precio_transporte})`);
+            await conexion.execute(`CALL CREARORD_COMPRA_LOCAL(${ID_CLIENTE} , ${ID_PRODUCTOR},  ${ID_PRODUCTO}, ${PRECIO}  ,'${unidad}','${unidad}' , '${TIPO_CLIENTE}' , 
+            '${direccion}' , '${fecha}', '${NOMBRE}', ${id_referencia}, ${id_transportista},${precio_transporte}, '${ciudad}')`);
             await conexion.commit();
         }
         resp.json('Correct')
